@@ -2,7 +2,8 @@
 @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
 
 body {
-  background-color: #1a1a1a;
+  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+  min-height: 100vh;
   color: #ffffff;
   font-family: "Poppins", sans-serif;
 }
@@ -20,7 +21,7 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0.2;
+  opacity: 0.8; /* Increased opacity for brighter background */
 }
 
 .content {
@@ -65,7 +66,8 @@ body {
 
 .form-control:focus,
 .form-select:focus {
-  box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
 
 .btn-primary {
@@ -83,6 +85,14 @@ body {
   background-color: #2a2a2a !important;
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
 .animate__animated {
@@ -164,4 +174,219 @@ body {
   animation: ripple 1s ease-out;
 }
 
-  
+/* HomePage styles */
+.homepage {
+  font-family: "Poppins", sans-serif;
+}
+
+.homepage .navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.homepage .list-group-item {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-color: #4a4a4a;
+  transition: all 0.3s ease;
+}
+
+.homepage .list-group-item:hover,
+.homepage .list-group-item.active {
+  background-color: #4a90e2;
+  color: #ffffff;
+  border-color: #4a90e2;
+}
+
+.homepage .card {
+  background-color: #2a2a2a;
+  border-color: #4a4a4a;
+}
+
+.homepage .btn-primary {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.homepage .btn-primary:hover {
+  background-color: #3a7bc8;
+  border-color: #3a7bc8;
+}
+
+.homepage .table-dark {
+  background-color: #2a2a2a;
+}
+
+.homepage .form-control,
+.homepage .form-select {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #4a4a4a;
+}
+
+.homepage .form-control:focus,
+.homepage .form-select:focus {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+}
+
+/* New styles for improved contrast and minimalistic design */
+.homepage h2 {
+  color: #4a90e2;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.table-responsive {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-dark {
+  margin-bottom: 0;
+}
+
+/* New animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* .card:hover .card-title {
+  animation: pulse 1s infinite;
+} */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate__slideIn {
+  animation: slideIn 0.5s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .homepage .col-md-3 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Chart styles */
+.recharts-default-tooltip {
+  background-color: rgba(42, 42, 42, 0.8) !important;
+  border: 1px solid #4a4a4a !important;
+}
+
+.recharts-tooltip-label {
+  color: #ffffff !important;
+}
+
+.recharts-tooltip-item {
+  color: #4a90e2 !important;
+}
+
+/* Portfolio details styles */
+.portfolio-details .card {
+  margin-bottom: 1.5rem;
+}
+
+.portfolio-details .display-4 {
+  color: #4a90e2;
+  font-weight: 600;
+}
+
+/* Watchlist styles */
+.watchlist .table th {
+  border-top: none;
+}
+
+.watchlist .table td {
+  vertical-align: middle;
+}
+
+/* Trade form styles */
+.trade .form-check-input:checked {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.trade .form-check-label {
+  color: #ffffff;
+}
+
+/* Additional animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate__fadeInUp {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Improve contrast for better readability */
+.text-muted {
+  color: #a0a0a0 !important;
+}
+
+.navbar-dark .navbar-brand {
+  color: #ffffff;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+/* Add subtle hover effects to interactive elements */
+.btn:hover,
+.nav-link:hover,
+.dropdown-item:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Improve form input styling */
+.form-control:focus,
+.form-select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+
