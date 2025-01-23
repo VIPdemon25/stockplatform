@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 const LandingPage = () => {
   const canvasRef = useRef(null)
 //sdd
+// hehehe
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext("2d")
