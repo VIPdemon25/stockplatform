@@ -9,7 +9,7 @@ import EmployeeHomePage from "./components/EmployeeHomePage"
 import "bootstrap/dist/css/bootstrap.min.css" // Bootstrap CSS
 import "bootstrap/dist/js/bootstrap.bundle.min.js" // Bootstrap JavaScript
 import "./App.css"
-
+// import "animate.css";
 function App() {
   return (
     <Router>
