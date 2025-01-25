@@ -15,7 +15,7 @@ const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate-fadeIn">
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 animate__animated animate__fadeIn">
       <div className="bg-dark border border-primary p-6 rounded-lg w-full max-w-md shadow-lg animate-zoomIn">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">

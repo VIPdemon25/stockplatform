@@ -1,51 +1,56 @@
-import React, { useState } from "react"
-import { useNavigate, Routes, Route } from "react-router-dom"
-import { Eye, DollarSign, Briefcase, TrendingUp } from "lucide-react"
+import React, { useState } from "react";
+import { useNavigate, Routes, Route } from "react-router-dom";
+import { Eye, DollarSign, Briefcase, TrendingUp } from "lucide-react";
 
-import Navbar from "./Navbar"
-import DashboardTab from "./DashboardTab"
-import TradeTab from "./TradeTab"
-import PortfoliosTab from "./PortfoliosTab"
-import PortfolioDetails from "./PortfolioDetails"
-import WatchlistTab from "./WatchlistTab"
+import Navbar from "./Navbar";
+import DashboardTab from "./DashboardTab";
+import TradeTab from "./TradeTab";
+import PortfoliosTab from "./PortfoliosTab";
+import PortfolioDetails from "./PortfolioDetails";
+import WatchlistTab from "./WatchlistTab";
+import UpdateAccount from "./UpdateAccount";
+import AccountDetails from "./AccountDetails";
 
 const HomePage = () => {
-  const [activeTab, setActiveTab] = useState("dashboard")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [filterType, setFilterType] = useState("")
-  const [selectedPortfolio, setSelectedPortfolio] = useState(null)
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [selectedPortfolio, setSelectedPortfolio] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
-    e.preventDefault()
-    console.log("Searching for:", searchQuery, "Filter:", filterType)
-  }
+    e.preventDefault();
+    console.log("Searching for:", searchQuery, "Filter:", filterType);
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("token")
-    sessionStorage.removeItem("user")
-    navigate("/login")
-  }
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    navigate("/login");
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return <DashboardTab />
+        return <DashboardTab />;
       case "trade":
-        return <TradeTab />
+        return <TradeTab />;
       case "portfolios":
         return selectedPortfolio ? (
-          <PortfolioDetails portfolio={selectedPortfolio} onBack={() => setSelectedPortfolio(null)} />
+          <PortfolioDetails
+            portfolio={selectedPortfolio}
+            onBack={() => setSelectedPortfolio(null)}
+          />
         ) : (
           <PortfoliosTab onSelectPortfolio={setSelectedPortfolio} />
-        )
+        );
       case "watchlist":
-        return <WatchlistTab />
+        return <WatchlistTab />;
       default:
-        return <DashboardTab />
+        return <DashboardTab />;
     }
-  }
+  };
 
   return (
     <div className="homepage bg-dark text-light min-vh-100">
@@ -62,25 +67,33 @@ const HomePage = () => {
           <div className="col-md-3 col-lg-2 mb-4">
             <div className="list-group">
               <button
-                className={`list-group-item list-group-item-action ${activeTab === "dashboard" ? "active" : ""}`}
+                className={`list-group-item list-group-item-action ${
+                  activeTab === "dashboard" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("dashboard")}
               >
                 <TrendingUp size={18} className="me-2" /> Dashboard
               </button>
               <button
-                className={`list-group-item list-group-item-action ${activeTab === "trade" ? "active" : ""}`}
+                className={`list-group-item list-group-item-action ${
+                  activeTab === "trade" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("trade")}
               >
                 <DollarSign size={18} className="me-2" /> Trade
               </button>
               <button
-                className={`list-group-item list-group-item-action ${activeTab === "portfolios" ? "active" : ""}`}
+                className={`list-group-item list-group-item-action ${
+                  activeTab === "portfolios" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("portfolios")}
               >
                 <Briefcase size={18} className="me-2" /> Portfolios
               </button>
               <button
-                className={`list-group-item list-group-item-action ${activeTab === "watchlist" ? "active" : ""}`}
+                className={`list-group-item list-group-item-action ${
+                  activeTab === "watchlist" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("watchlist")}
               >
                 <Eye size={18} className="me-2" /> Watchlist
@@ -93,6 +106,8 @@ const HomePage = () => {
                 <Routes>
                   {/* Catch-all route for other tabs */}
                   <Route path="*" element={renderTabContent()} />
+                  <Route path="/update-account" element={<UpdateAccount />} />
+                  <Route path="/account-details" element={<AccountDetails />} />
                 </Routes>
               </div>
             </div>
@@ -100,7 +115,7 @@ const HomePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

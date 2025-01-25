@@ -2,11 +2,22 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Settings, User, LogOut, Trash2 } from "lucide-react";
 
-const Navbar = ({ searchQuery, setSearchQuery, filterType, setFilterType, handleSearch, handleLogout }) => {
+const Navbar = ({
+  searchQuery,
+  setSearchQuery,
+  filterType,
+  setFilterType,
+  handleSearch,
+  handleLogout,
+}) => {
   const navigate = useNavigate();
 
   const handleDeleteAccount = () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
       // Add logic here to delete the account
       console.log("Account deleted");
       // Redirect to login page or show a confirmation message
@@ -53,9 +64,12 @@ const Navbar = ({ searchQuery, setSearchQuery, filterType, setFilterType, handle
             >
               <Settings size={18} />
             </button>
-            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+            <ul
+              className="dropdown-menu dropdown-menu-end"
+              aria-labelledby="accountDropdown"
+            >
               <li>
-                <Link to="/account-details" className="dropdown-item">
+                <Link to="/home/account-details" className="dropdown-item">
                   <User size={18} className="me-2" />
                   Account Details
                 </Link>
@@ -64,7 +78,7 @@ const Navbar = ({ searchQuery, setSearchQuery, filterType, setFilterType, handle
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <Link to="/update-account" className="dropdown-item">
+                <Link to="/home/update-account" className="dropdown-item">
                   <Settings size={18} className="me-2" />
                   Update Account
                 </Link>
@@ -73,7 +87,10 @@ const Navbar = ({ searchQuery, setSearchQuery, filterType, setFilterType, handle
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <button onClick={handleDeleteAccount} className="dropdown-item text-danger">
+                <button
+                  onClick={handleDeleteAccount}
+                  className="dropdown-item text-danger"
+                >
                   <Trash2 size={18} className="me-2" />
                   Delete Account
                 </button>
@@ -82,7 +99,10 @@ const Navbar = ({ searchQuery, setSearchQuery, filterType, setFilterType, handle
                 <hr className="dropdown-divider" />
               </li>
               <li>
-                <button onClick={handleLogout} className="dropdown-item text-warning">
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item text-warning"
+                >
                   <LogOut size={18} className="me-2" />
                   Logout
                 </button>
