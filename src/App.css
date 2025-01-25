@@ -272,9 +272,7 @@ body {
   }
 }
 
-/* .card:hover .card-title {
-  animation: pulse 1s infinite;
-} */
+
 
 @keyframes slideIn {
   from {
@@ -374,7 +372,7 @@ body {
   color: #ffffff;
 }
 
-/* Add subtle hover effects to interactive elements */
+
 .btn:hover,
 .nav-link:hover,
 .dropdown-item:hover {
@@ -389,7 +387,7 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
 
-/* Add to your App.css */
+
 .employee-home .card {
   border: 1px solid #4a90e2;
   transition: all 0.3s ease;
@@ -397,11 +395,7 @@ body {
 
 .employee-home .card:hover {
   transform: translateY(-5px);
-  /* box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2); */
-}
-
-.employee-home .table-hover tbody tr:hover {
-  /* background-color: rgba(74, 144, 226, 0.05); */
+  
 }
 
 .employee-home .form-control {
@@ -462,24 +456,22 @@ body {
   color: #6c757d !important;
   opacity: 0.7 !important;
 }
-/* Move the right sidebar content down */
+
 .col-md-4 {
-  padding-top: 20px; /* Adjust this value as needed */
+  padding-top: 20px; 
 }
 
-/* Ensure the cards inside the right sidebar don't overflow */
+
 .col-md-4 > .card {
-  margin-bottom: 1.5rem; /* Maintain spacing between cards */
+  margin-bottom: 1.5rem; 
 }
 
-/* Fix hover effects for cards */
 .employee-home .card {
   transition: all 0.3s ease;
 }
 
 .employee-home .card:hover {
-  transform: translateY(-2px); /* Subtle hover effect */
-  /* box-shadow: 0 4px 8px rgba(74, 144, 226, 0.1); Soft shadow */
+  transform: translateY(-2px); 
 }
 
 /* Ensure the transaction list stays contained */
@@ -499,7 +491,6 @@ body {
 }
 /*From here*/
 
-
 .card {
   background-color: #333 !important;
   border: 1px solid #444 !important;
@@ -511,7 +502,7 @@ body {
   border-bottom: 2px solid #4a90e2;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
-  /* color: #4a90e2 !important; */
+  
 }
 .bg-gradient-primary {
   border: 1px solid rgba(74, 144, 226, 0.3) !important;
@@ -532,7 +523,7 @@ body {
   stroke: #444 !important;
 }
 
-/*new */
+
 /* Global Styles for UpdateCompany Modal */
 .bg-dark {
   background-color: #1a1a1a !important;
@@ -703,6 +694,4 @@ body {
   background-color: #000000;
 }
 
-/* .bg-opacity-50 {
-  opacity: 0.5;
-} */
+
