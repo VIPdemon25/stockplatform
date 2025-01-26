@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Users, PlusCircle, Sliders, DollarSign, Edit, Trash2, Activity, LogOut, Search } from "lucide-react";
+import { Users, PlusCircle, Sliders, Edit, Trash2, Activity, LogOut, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CreateCompany from "./CreateCompany";
 import UpdateCompany from "./UpdateCompany";
