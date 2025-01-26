@@ -1,40 +1,62 @@
-import React, { useState } from "react";
+import React from "react";
 import { PlusCircle } from "lucide-react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 
 const CreateCompany = ({ onStockSubmit }) => {
-  const [newStock, setNewStock] = useState({
-    name: "",
-    symbol: "",
-    sharesToRelease: "",
-    companyType: "",
-    entryPrice: "",
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Stock Name is required"),
+    symbol: Yup.string()
+      .min(3, "Symbol must be at least 3 characters")
+      .required("Stock Symbol is required"),
+    sharesToRelease: Yup.number()
+      .min(1, "Shares to Release must be greater than 0")
+      .required("Shares to Release is required"),
+    companyType: Yup.string().required("Company Type is required"),
+    entryPrice: Yup.number()
+      .min(0.01, "Entry Price must be greater than 0")
+      .required("Entry Price is required"),
   });
 
-  const handleInputChange = (e) => {
-    setNewStock({ ...newStock, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const backendPayload = {
-      name: newStock.name,
-      symbol: newStock.symbol,
-      totalShares: newStock.sharesToRelease,
-      type: newStock.companyType,
-      entryPrice: newStock.entryPrice,
-    };
-
-    onStockSubmit(backendPayload);
-
-    setNewStock({
+  // Formik hook
+  const formik = useFormik({
+    initialValues: {
       name: "",
       symbol: "",
       sharesToRelease: "",
       companyType: "",
       entryPrice: "",
-    });
-  };
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      const backendPayload = {
+        name: values.name,
+        symbol: values.symbol,
+        totalShares: values.sharesToRelease,
+        type: values.companyType,
+        entryPrice: values.entryPrice,
+      };
+
+      try {
+        // Send the payload to the backend using Axios
+        const response = await axios.post("/api/stocks", backendPayload);
+
+        // Log the response (for debugging)
+        console.log("Stock registration successful:", response.data);
+
+        // Call the parent function (if needed)
+        onStockSubmit(backendPayload);
+
+        // Reset the form
+        formik.resetForm();
+      } catch (error) {
+        // Handle errors (e.g., display error message)
+        console.error("Stock registration failed:", error.response?.data || error.message);
+      }
+    },
+  });
 
   return (
     <div className="card bg-dark border-primary mb-4">
@@ -43,55 +65,72 @@ const CreateCompany = ({ onStockSubmit }) => {
           <PlusCircle size={20} className="me-2" />
           New Stock Registration
         </h5>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={formik.handleSubmit}>
           {/* Stock Name */}
           <div className="mb-3">
             <input
               type="text"
-              className="form-control bg-dark text-light border-primary"
+              className={`form-control bg-dark text-light border-primary ${
+                formik.touched.name && formik.errors.name ? "is-invalid" : ""
+              }`}
               placeholder="Stock Name"
               name="name"
-              value={newStock.name}
-              onChange={handleInputChange}
-              required
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
+            {formik.touched.name && formik.errors.name ? (
+              <div className="invalid-feedback">{formik.errors.name}</div>
+            ) : null}
           </div>
 
           {/* Stock Symbol */}
           <div className="mb-3">
             <input
               type="text"
-              className="form-control bg-dark text-light border-primary"
+              className={`form-control bg-dark text-light border-primary ${
+                formik.touched.symbol && formik.errors.symbol ? "is-invalid" : ""
+              }`}
               placeholder="Stock Symbol"
               name="symbol"
-              value={newStock.symbol}
-              onChange={handleInputChange}
-              required
+              value={formik.values.symbol}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
+            {formik.touched.symbol && formik.errors.symbol ? (
+              <div className="invalid-feedback">{formik.errors.symbol}</div>
+            ) : null}
           </div>
 
           {/* Number of Shares to Release */}
           <div className="mb-3">
             <input
               type="number"
-              className="form-control bg-dark text-light border-primary"
+              className={`form-control bg-dark text-light border-primary ${
+                formik.touched.sharesToRelease && formik.errors.sharesToRelease ? "is-invalid" : ""
+              }`}
               placeholder="Number of Shares to Release"
               name="sharesToRelease"
-              value={newStock.sharesToRelease}
-              onChange={handleInputChange}
-              required
+              value={formik.values.sharesToRelease}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
+            {formik.touched.sharesToRelease && formik.errors.sharesToRelease ? (
+              <div className="invalid-feedback">{formik.errors.sharesToRelease}</div>
+            ) : null}
           </div>
 
           {/* Type of Company */}
           <div className="mb-3">
             <div className="input-group position-relative">
               <select
-                className="form-select bg-dark text-light border-primary pe-5" // Add padding for the arrow
+                className={`form-select bg-dark text-light border-primary pe-5 ${
+                  formik.touched.companyType && formik.errors.companyType ? "is-invalid" : ""
+                }`}
                 name="companyType"
-                value={newStock.companyType}
-                onChange={handleInputChange}
-                required
+                value={formik.values.companyType}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               >
                 <option value="" disabled>
                   Select Type of Company
@@ -102,22 +141,30 @@ const CreateCompany = ({ onStockSubmit }) => {
                 <option value="Other">Other</option>
               </select>
               <span className="position-absolute end-0 top-0 bottom-0 d-flex align-items-center pe-3 bg-transparent">
-                <i className="bi bi-chevron-down text-light"></i> {/* Bootstrap icon for downward arrow */}
+                <i className="bi bi-chevron-down text-light"></i>
               </span>
             </div>
+            {formik.touched.companyType && formik.errors.companyType ? (
+              <div className="invalid-feedback">{formik.errors.companyType}</div>
+            ) : null}
           </div>
 
           {/* Entry Price */}
           <div className="mb-3">
             <input
               type="number"
-              className="form-control bg-dark text-light border-primary"
+              className={`form-control bg-dark text-light border-primary ${
+                formik.touched.entryPrice && formik.errors.entryPrice ? "is-invalid" : ""
+              }`}
               placeholder="Entry Price"
               name="entryPrice"
-              value={newStock.entryPrice}
-              onChange={handleInputChange}
-              required
+              value={formik.values.entryPrice}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
+            {formik.touched.entryPrice && formik.errors.entryPrice ? (
+              <div className="invalid-feedback">{formik.errors.entryPrice}</div>
+            ) : null}
           </div>
 
           {/* Submit Button */}

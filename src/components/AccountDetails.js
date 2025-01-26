@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"
-import { User, Mail, AtSign } from "lucide-react"
-import { Link } from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import { User, Mail, AtSign } from "lucide-react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 const AccountDetails = () => {
   const [accountDetails, setAccountDetails] = useState({
@@ -8,19 +9,34 @@ const AccountDetails = () => {
     lastName: "",
     email: "",
     username: "",
-  })
+  });
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
-    // Simulating an API call to fetch account details
-    setTimeout(() => {
-      setAccountDetails({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        username: "johndoe123",
-      })
-    }, 1000)
-  }, [])
+    // Fetch account details from the backend
+    const fetchAccountDetails = async () => {
+      try {
+        const response = await axios.get("/api/account/details"); // Replace with your API endpoint
+        setAccountDetails(response.data); // Set the fetched data
+        setLoading(false); // Disable loading state
+      } catch (error) {
+        console.error("Failed to fetch account details:", error);
+        setError("Failed to fetch account details. Please try again later."); // Set error message
+        setLoading(false); // Disable loading state
+      }
+    };
+
+    fetchAccountDetails(); // Call the function
+  }, []);
+
+  if (loading) {
+    return <div className="text-center text-light">Loading account details...</div>; // Loading state
+  }
+
+  if (error) {
+    return <div className="text-center text-danger">{error}</div>; // Error state
+  }
 
   return (
     <div className="account-details animate__animated animate__fadeIn">
@@ -32,7 +48,7 @@ const AccountDetails = () => {
       </div>
       <div className="card bg-dark">
         <div className="card-body">
-          {/* ... rest of the card body content ... */}
+          {/* First Name */}
           <div className="mb-4 animate__animated animate__fadeInUp animate__delay-1s">
             <label className="form-label text-light">First Name</label>
             <div className="input-group">
@@ -47,37 +63,58 @@ const AccountDetails = () => {
               />
             </div>
           </div>
+
+          {/* Last Name */}
           <div className="mb-4 animate__animated animate__fadeInUp animate__delay-2s">
             <label className="form-label text-light">Last Name</label>
             <div className="input-group">
               <span className="input-group-text bg-primary text-light">
                 <User size={18} />
               </span>
-              <input type="text" className="form-control bg-dark text-light" value={accountDetails.lastName} readOnly />
+              <input
+                type="text"
+                className="form-control bg-dark text-light"
+                value={accountDetails.lastName}
+                readOnly
+              />
             </div>
           </div>
+
+          {/* Email */}
           <div className="mb-4 animate__animated animate__fadeInUp animate__delay-3s">
             <label className="form-label text-light">Email</label>
             <div className="input-group">
               <span className="input-group-text bg-primary text-light">
                 <Mail size={18} />
               </span>
-              <input type="email" className="form-control bg-dark text-light" value={accountDetails.email} readOnly />
+              <input
+                type="email"
+                className="form-control bg-dark text-light"
+                value={accountDetails.email}
+                readOnly
+              />
             </div>
           </div>
+
+          {/* Username */}
           <div className="mb-4 animate__animated animate__fadeInUp animate__delay-4s">
             <label className="form-label text-light">Username</label>
             <div className="input-group">
               <span className="input-group-text bg-primary text-light">
                 <AtSign size={18} />
               </span>
-              <input type="text" className="form-control bg-dark text-light" value={accountDetails.username} readOnly />
+              <input
+                type="text"
+                className="form-control bg-dark text-light"
+                value={accountDetails.username}
+                readOnly
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AccountDetails
+export default AccountDetails;

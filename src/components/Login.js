@@ -1,22 +1,44 @@
-import React, { useState, useRef } from "react"
-import { Link } from "react-router-dom"
-import { CSSTransition } from "react-transition-group"
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 
 const Login = () => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [showForm, setShowForm] = useState(false)
-  const nodeRef = useRef(null)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Here you would typically handle the login logic
-    console.log("Login submitted", { username, password })
-  }
+  const [showForm, setShowForm] = useState(false);
+  const nodeRef = useRef(null);
 
   React.useEffect(() => {
-    setShowForm(true)
-  }, [])
+    setShowForm(true);
+  }, []);
+
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    username: Yup.string().required("Username is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
+
+  // Formik hook
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const response = await axios.post("/api/login", values);
+        console.log("Login successful", response.data);
+        // Handle successful login (e.g., redirect to dashboard)
+      } catch (error) {
+        console.error("Login failed", error.response?.data || error.message);
+        // Handle login error (e.g., show error message)
+      }
+    },
+  });
 
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
@@ -27,7 +49,7 @@ const Login = () => {
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "20rem" }}>
           <div className="card-body">
             <h2 className="card-title text-center mb-4 text-primary">Login to Elevate</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={formik.handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">
                   Username
@@ -37,10 +59,14 @@ const Login = () => {
                   id="username"
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   placeholder="Enter your username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
+                  name="username"
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.username && formik.errors.username ? (
+                  <div className="text-danger">{formik.errors.username}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">
@@ -51,10 +77,14 @@ const Login = () => {
                   id="password"
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="text-danger">{formik.errors.password}</div>
+                ) : null}
               </div>
               <div className="d-grid">
                 <button type="submit" className="btn btn-primary animate__animated animate__fadeInUp animate__faster">
@@ -72,8 +102,7 @@ const Login = () => {
         </div>
       </CSSTransition>
     </div>
-  )
-}
+  );
+};
 
-export default Login
-
+export default Login;
