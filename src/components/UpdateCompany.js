@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
+const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
   const [updatedStock, setUpdatedStock] = useState(stock);
 
   const handleInputChange = (e) => {
@@ -137,14 +137,16 @@ const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
               type="button"
               onClick={onCancel}
               className="btn btn-primary w-50"
+              disabled={isUpdating}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="btn btn-primary w-100"
+              disabled={isUpdating}
             >
-              Update Stock
+              {isUpdating ? "Updating..." : "Update Stock"}
             </button>
           </div>
         </form>

@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Users, PlusCircle, Sliders, Edit, Trash2, Activity, LogOut, Search } from "lucide-react";
+import {
+  Users,
+  PlusCircle,
+  Sliders,
+  Edit,
+  Trash2,
+  Activity,
+  LogOut,
+  Search,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CreateCompany from "./CreateCompany";
 import UpdateCompany from "./UpdateCompany";
@@ -10,11 +19,11 @@ const EmployeeHomePage = () => {
   const [transactions, setTransactions] = useState([]);
   const [showStockManagement, setShowStockManagement] = useState(false);
   const [stocks, setStocks] = useState([]);
-    // Dummy stocks for testing
-    
+
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +50,24 @@ const EmployeeHomePage = () => {
           Authorization: `Bearer ${token}`, // Include the JWT token
         },
       });
+      // const dummy = [
+      //   {
+      //     id: 1,
+      //     fname: "John",
+      //     lname: "Doe",
+      //     email: "johndoe@example.com",
+      //     status: true,
+      //   },
+      //   {
+      //     id: 2,
+      //     fname: "Jane",
+      //     lname: "Smith",
+      //     email: "janesmith@example.com",
+      //     status: false,
+      //   },
+      // ];
+      // setAccounts(dummy);
+
       setAccounts(response.data);
     } catch (error) {
       console.error("Error fetching accounts:", error);
@@ -90,21 +117,23 @@ const EmployeeHomePage = () => {
   };
 
   const handleUpdateStock = async (updatedStock) => {
-
-  const token = localStorage.getItem("token");
-  const stockId = selectedStock.stockId;
-  console.log(selectedStock);
-  const backendPayLoad = {
-      stockId : selectedStock.stockId,
+    const token = localStorage.getItem("token");
+    const stockId = selectedStock.stockId;
+    console.log(selectedStock);
+    const backendPayLoad = {
+      stockId: selectedStock.stockId,
       name: updatedStock.name,
       symbol: updatedStock.symbol,
       open: updatedStock.open,
       last: updatedStock.last,
       totalShares: updatedStock.totalShares,
-}
+    };
     console.log(backendPayLoad);
+    setIsUpdating(true);
     try {
-      await axios.put(`http://localhost:9091/api/stocks/companies/${stockId}/update`, backendPayLoad,
+      await axios.put(
+        `http://localhost:9091/api/stocks/companies/${stockId}/update`,
+        backendPayLoad,
         {
           headers: {
             Authorization: `Bearer ${token}`, // Include the JWT token
@@ -115,6 +144,8 @@ const EmployeeHomePage = () => {
       setSelectedStock(null);
     } catch (error) {
       console.error("Error updating stock:", error);
+    } finally{
+      setIsUpdating(false);
     }
   };
 
@@ -148,7 +179,9 @@ const EmployeeHomePage = () => {
                     onClick={() => setShowStockManagement(!showStockManagement)}
                   >
                     <Sliders size={18} className="me-2" />
-                    {showStockManagement ? "Back to Dashboard" : "Manage Stocks"}
+                    {showStockManagement
+                      ? "Back to Dashboard"
+                      : "Manage Stocks"}
                   </button>
                 </div>
               </div>
@@ -242,16 +275,20 @@ const EmployeeHomePage = () => {
                           <td>{user.fname}</td>
                           <td>{user.lname}</td>
                           <td>{user.email}</td>
-                          <td>{user.status}</td>
+                          {/* <td>{user.status}</td> */}
                           <td>
-                            <span className={`badge ${user.active ? "bg-success" : "bg-danger"}`}>
-                              {user.active ? "Active" : "Inactive"}
+                            <span
+                              className={`badge ${
+                                user.status ? "bg-success" : "bg-danger"
+                              }`}
+                            >
+                              {user.status ? "Active" : "Inactive"}
                             </span>
                           </td>
-                          <td>
+                          {/* <td>
                             <button className="btn btn-sm btn-outline-info me-2">Edit</button>
                             <button className="btn btn-sm btn-outline-warning">Reset Pass</button>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>
@@ -273,13 +310,24 @@ const EmployeeHomePage = () => {
               </h5>
               <div className="transaction-list">
                 {transactions.map((transaction, index) => (
-                  <div key={index} className="transaction-item mb-3 p-2 bg-dark-secondary rounded">
+                  <div
+                    key={index}
+                    className="transaction-item mb-3 p-2 bg-dark-secondary rounded"
+                  >
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
-                        <span className={`badge ${transaction.type === "buy" ? "bg-success" : "bg-danger"}`}>
+                        <span
+                          className={`badge ${
+                            transaction.type === "buy"
+                              ? "bg-success"
+                              : "bg-danger"
+                          }`}
+                        >
                           {transaction.type.toUpperCase()}
                         </span>
-                        <span className="ms-2 text-light">{transaction.stockName}</span>
+                        <span className="ms-2 text-light">
+                          {transaction.stockName}
+                        </span>
                       </div>
                       <div className="text-end">
                         <div className="text-light">
@@ -298,7 +346,12 @@ const EmployeeHomePage = () => {
         </div>
       </div>
       {selectedStock && (
-        <UpdateCompany stock={selectedStock} onUpdate={handleUpdateStock} onCancel={() => setSelectedStock(null)} />
+        <UpdateCompany
+          stock={selectedStock}
+          onUpdate={handleUpdateStock}
+          onCancel={() => setSelectedStock(null)}
+          isUpdating={isUpdating}
+        />
       )}
     </div>
   );

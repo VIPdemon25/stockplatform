@@ -695,3 +695,77 @@ body {
 }
 
 
+/* Add these styles to your existing App.css file */
+
+/* Add or update these styles in your App.css file */
+
+/* Add or update these styles in your App.css file */
+
+.all-trades .card {
+  border: 1px solid #4a90e2;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.all-trades .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.all-trades h2 {
+  color: #4a90e2;
+  font-weight: 600;
+}
+
+.all-trades .btn-primary {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.all-trades .btn-primary:hover {
+  background-color: #3a7bc8;
+  border-color: #3a7bc8;
+}
+
+.all-trades .btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.all-trades .btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+}
+
+.all-trades .text-primary {
+  color: #4a90e2 !important;
+}
+
+.all-trades .text-success {
+  color: #28a745 !important;
+}
+
+.all-trades .text-danger {
+  color: #dc3545 !important;
+}
+
+.all-trades .text-info {
+  color: #17a2b8 !important;
+}
+
+.all-trades .text-warning {
+  color: #ffc107 !important;
+}
+
+.all-trades .text-muted {
+  color: #6c757d !important;
+}
+
+.all-trades .rounded {
+  border-radius: 0.5rem !important;
+}
+
+.all-trades .shadow-sm {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+

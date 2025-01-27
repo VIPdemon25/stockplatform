@@ -78,6 +78,15 @@ const Navbar = ({
                 <hr className="dropdown-divider" />
               </li>
               <li>
+                <Link to="/all-trades" className="dropdown-item">
+                  <User size={18} className="me-2" />
+                  My Trades
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
                 <Link to="/home/update-account" className="dropdown-item">
                   <Settings size={18} className="me-2" />
                   Update Account
