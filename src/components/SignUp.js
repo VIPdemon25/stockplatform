@@ -1,32 +1,72 @@
-import React, { useState, useEffect, useRef } from "react"
-import { Link } from "react-router-dom"
-import { CSSTransition } from "react-transition-group"
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { CSSTransition } from "react-transition-group";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
 
 const SignUp = () => {
-  const [formData, setFormData] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    username: "",
-    password: "",
-    role: "",
-  })
-  const [showForm, setShowForm] = useState(false)
-  const nodeRef = useRef(null)
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Here you would typically handle the signup logic
-    console.log("Signup submitted", formData)
-  }
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [success, setSuccess] = useState(false); // Success state
+  const nodeRef = useRef(null);
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
-    setShowForm(true)
-  }, [])
+    setShowForm(true);
+  }, []);
+
+  // Validation schema using Yup
+  const validationSchema = Yup.object({
+    fname: Yup.string()
+      .min(3, "First name must be at least 3 characters")
+      .required("First name is required"),
+    lname: Yup.string()
+      .min(3, "Last name must be at least 3 characters")
+      .required("Last name is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .matches(/@cognizant\.com$/, "Only @cognizant.com emails are allowed")
+      .required("Email is required"),
+    username: Yup.string().required("Username is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    role: Yup.string().required("Role is required"),
+  });
+
+  // Formik hook
+  const formik = useFormik({
+    initialValues: {
+      fname: "",
+      lname: "",
+      email: "",
+      username: "",
+      password: "",
+      role: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true); // Enable loading state
+        const response = await axios.post("/api/signup", values);
+        console.log("Signup successful", response.data);
+
+        // Set success state and show success message
+        setSuccess(true);
+
+        // Redirect to login page after 2 seconds
+        setTimeout(() => {
+          navigate("/login"); // Redirect to login page
+        }, 2000);
+      } catch (error) {
+        console.error("Signup failed", error.response?.data || error.message);
+        alert("Signup failed. Please try again."); // Show error message
+      } finally {
+        setLoading(false); // Disable loading state
+      }
+    },
+  });
 
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
@@ -37,7 +77,15 @@ const SignUp = () => {
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}>
           <div className="card-body">
             <h2 className="card-title text-center mb-4 text-primary">Sign Up for Elevate</h2>
-            <form onSubmit={handleSubmit}>
+
+            {/* Success Message */}
+            {success && (
+              <div className="alert alert-success text-center" role="alert">
+                Account created successfully! Redirecting to login...
+              </div>
+            )}
+
+            <form onSubmit={formik.handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="fname" className="form-label">
                   First Name
@@ -48,10 +96,13 @@ const SignUp = () => {
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="fname"
                   placeholder="Enter your first name"
-                  value={formData.fname}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.fname}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.fname && formik.errors.fname ? (
+                  <div className="text-danger">{formik.errors.fname}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="lname" className="form-label">
@@ -63,10 +114,13 @@ const SignUp = () => {
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="lname"
                   placeholder="Enter your last name"
-                  value={formData.lname}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.lname}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.lname && formik.errors.lname ? (
+                  <div className="text-danger">{formik.errors.lname}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">
@@ -78,10 +132,13 @@ const SignUp = () => {
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="email"
                   placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.email && formik.errors.email ? (
+                  <div className="text-danger">{formik.errors.email}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">
@@ -93,10 +150,13 @@ const SignUp = () => {
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="username"
                   placeholder="Choose a username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.username && formik.errors.username ? (
+                  <div className="text-danger">{formik.errors.username}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">
@@ -108,10 +168,13 @@ const SignUp = () => {
                   className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="password"
                   placeholder="Create a password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.password && formik.errors.password ? (
+                  <div className="text-danger">{formik.errors.password}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <label htmlFor="role" className="form-label">
@@ -121,19 +184,26 @@ const SignUp = () => {
                   id="role"
                   className="form-select bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
                   name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  required
+                  value={formik.values.role}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 >
                   <option value="">Select Role</option>
                   <option value="investor">Investor</option>
                   <option value="trader">Trader</option>
                   <option value="analyst">Analyst</option>
                 </select>
+                {formik.touched.role && formik.errors.role ? (
+                  <div className="text-danger">{formik.errors.role}</div>
+                ) : null}
               </div>
               <div className="d-grid">
-                <button type="submit" className="btn btn-primary animate__animated animate__fadeInUp animate__faster">
-                  Sign Up
+                <button
+                  type="submit"
+                  className="btn btn-primary animate__animated animate__fadeInUp animate__faster"
+                  disabled={loading} // Disable button while loading
+                >
+                  {loading ? "Signing Up..." : "Sign Up"}
                 </button>
               </div>
             </form>
@@ -147,8 +217,7 @@ const SignUp = () => {
         </div>
       </CSSTransition>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
-
+export default SignUp;
