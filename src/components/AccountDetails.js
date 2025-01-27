@@ -17,8 +17,25 @@ const AccountDetails = () => {
     // Fetch account details from the backend
     const fetchAccountDetails = async () => {
       try {
-        const response = await axios.get("/api/account/details"); // Replace with your API endpoint
-        setAccountDetails(response.data); // Set the fetched data
+        // Get the JWT token from local storage
+        const token = localStorage.getItem("token");
+        const accountId = localStorage.getItem("accountId");
+
+        // Make the request with the Authorization header
+        const response = await axios.get(`http://localhost:9091/api/stocktrader/${accountId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the JWT token
+          },
+        });
+
+        // Map the backend response to the frontend state
+        setAccountDetails({
+          firstName: response.data.fname,
+          lastName: response.data.lname,
+          email: response.data.email,
+          username: response.data.accountId,
+        });
+
         setLoading(false); // Disable loading state
       } catch (error) {
         console.error("Failed to fetch account details:", error);

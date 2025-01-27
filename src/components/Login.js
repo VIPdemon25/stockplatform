@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import { CSSTransition } from "react-transition-group";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,6 +8,7 @@ import axios from "axios";
 const Login = () => {
   const [showForm, setShowForm] = useState(false);
   const nodeRef = useRef(null);
+  const navigate = useNavigate(); // Hook for navigation
 
   React.useEffect(() => {
     setShowForm(true);
@@ -30,12 +31,28 @@ const Login = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await axios.post("/api/login", values);
+        // Send login request to the backend
+        const response = await axios.post("http://localhost:9091/v1/login", values);
         console.log("Login successful", response.data);
-        // Handle successful login (e.g., redirect to dashboard)
+
+        // Extract JWT token and account ID from the response
+        const { token, accountId } = response.data;
+
+        // Store JWT token and account ID in local storage
+        localStorage.setItem("token", token.token); // Store the JWT token
+        localStorage.setItem("accountId", accountId); // Store the account ID
+        localStorage.setItem("authority",token.authorities[0].authority);
+        if(localStorage.getItem("authority") === "STOCKADMIN"){
+          navigate("/employee-home"); // Redirect to the home page
+        }
+        else{
+          navigate("/home");
+        }
+
+        // Navigate to the home page
       } catch (error) {
         console.error("Login failed", error.response?.data || error.message);
-        // Handle login error (e.g., show error message)
+        alert("Login failed. Please check your credentials and try again."); // Show error message
       }
     },
   });

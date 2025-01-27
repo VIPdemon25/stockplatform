@@ -26,7 +26,7 @@ const HomePage = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("accountId");
     navigate("/login");
   };
 

@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 
 const UpdateAccount = () => {
-  // Validation schema using Yup
+  // Validation schema using Yup (username and password fields removed)
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .min(3, "First name must be at least 3 characters")
@@ -13,24 +13,18 @@ const UpdateAccount = () => {
     lastName: Yup.string()
       .min(3, "Last name must be at least 3 characters")
       .required("Last name is required"),
-    username: Yup.string().required("Username is required"),
     email: Yup.string()
       .email("Invalid email address")
       .matches(/@cognizant\.com$/, "Only @cognizant.com emails are allowed")
       .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .required("Password is required"),
   });
 
-  // Formik hook
+  // Formik hook (username and password fields removed from initial values)
   const formik = useFormik({
     initialValues: {
       firstName: "",
       lastName: "",
-      username: "",
       email: "",
-      password: "",
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -38,8 +32,24 @@ const UpdateAccount = () => {
         // Set loading state to true
         formik.setSubmitting(true);
 
+        const backendPayLoad = {
+          fname: values.firstName,
+          lname: values.lastName,
+          email: values.email,
+        }
+        
+        const token = localStorage.getItem("token");
+        const accountId = localStorage.getItem("accountId");
         // Send the updated data to the backend using Axios
-        const response = await axios.put("/api/account/update", values); // Replace with your API endpoint
+        const response = await axios.put(
+          `http://localhost:9091/api/stocktrader/update/${accountId}`, // Update endpoint
+          backendPayLoad, // Payload
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          }
+        );
 
         // Log the response (for debugging)
         console.log("Account updated successfully:", response.data);
@@ -110,27 +120,6 @@ const UpdateAccount = () => {
           ) : null}
         </div>
 
-        {/* Username */}
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
-          </label>
-          <input
-            type="text"
-            className={`form-control ${
-              formik.touched.username && formik.errors.username ? "is-invalid" : ""
-            }`}
-            id="username"
-            name="username"
-            value={formik.values.username}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.username && formik.errors.username ? (
-            <div className="invalid-feedback">{formik.errors.username}</div>
-          ) : null}
-        </div>
-
         {/* Email */}
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
@@ -149,27 +138,6 @@ const UpdateAccount = () => {
           />
           {formik.touched.email && formik.errors.email ? (
             <div className="invalid-feedback">{formik.errors.email}</div>
-          ) : null}
-        </div>
-
-        {/* Password */}
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            className={`form-control ${
-              formik.touched.password && formik.errors.password ? "is-invalid" : ""
-            }`}
-            id="password"
-            name="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.touched.password && formik.errors.password ? (
-            <div className="invalid-feedback">{formik.errors.password}</div>
           ) : null}
         </div>
 

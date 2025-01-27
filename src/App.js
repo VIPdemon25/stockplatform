@@ -8,6 +8,7 @@ import EmployeeHomePage from "./components/EmployeeHomePage";
 import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap CSS
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Bootstrap JavaScript
 import "./App.css";
+import SignupEmployee from "./components/SignupEmployee";
 // import "animate.css";
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home/*" element={<HomePage />} />
           <Route path="/employee-home" element={<EmployeeHomePage />} />
+          <Route path="/signup-employee" element={<SignupEmployee/>}/>
         </Routes>
       </div>
     </Router>

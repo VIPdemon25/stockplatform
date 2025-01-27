@@ -9,45 +9,9 @@ const EmployeeHomePage = () => {
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [showStockManagement, setShowStockManagement] = useState(false);
-  const [stocks, setStocks] = useState([
+  const [stocks, setStocks] = useState([]);
     // Dummy stocks for testing
-    {
-      id: 1,
-      name: "Apple Inc.",
-      symbol: "AAPL",
-      currentPrice: 150.25,
-      change24h: 1.5,
-      totalShares: 1000000,
-      type: "Public",
-    },
-    {
-      id: 2,
-      name: "Google LLC",
-      symbol: "GOOGL",
-      currentPrice: 2800.5,
-      change24h: -0.75,
-      totalShares: 500000,
-      type: "Public",
-    },
-    {
-      id: 3,
-      name: "Tesla Inc.",
-      symbol: "TSLA",
-      currentPrice: 750.0,
-      change24h: 2.3,
-      totalShares: 750000,
-      type: "Public",
-    },
-    {
-      id: 4,
-      name: "Amazon.com Inc.",
-      symbol: "AMZN",
-      currentPrice: 3400.0,
-      change24h: -1.2,
-      totalShares: 300000,
-      type: "Public",
-    },
-  ]);
+    
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
@@ -69,8 +33,14 @@ const EmployeeHomePage = () => {
   }, [searchTerm, stocks]);
 
   const fetchAccounts = async () => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await axios.get("/api/accounts");
+      const response = await axios.get(`http://localhost:9091/api/stocktrader`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token
+        },
+      });
       setAccounts(response.data);
     } catch (error) {
       console.error("Error fetching accounts:", error);
@@ -87,8 +57,14 @@ const EmployeeHomePage = () => {
   };
 
   const fetchStocks = async () => {
+    const token = localStorage.getItem("token");
+
     try {
-      const response = await axios.get("/api/stocks");
+      const response = await axios.get(`http://localhost:9091/api/stocks`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token
+        },
+      });
       setStocks(response.data);
     } catch (error) {
       console.error("Error fetching stocks:", error);
@@ -114,8 +90,27 @@ const EmployeeHomePage = () => {
   };
 
   const handleUpdateStock = async (updatedStock) => {
+
+  const token = localStorage.getItem("token");
+  const stockId = selectedStock.stockId;
+  console.log(selectedStock);
+  const backendPayLoad = {
+      stockId : selectedStock.stockId,
+      name: updatedStock.name,
+      symbol: updatedStock.symbol,
+      open: updatedStock.open,
+      last: updatedStock.last,
+      totalShares: updatedStock.totalShares,
+}
+    console.log(backendPayLoad);
     try {
-      await axios.put(`/api/stocks/${updatedStock.id}`, updatedStock);
+      await axios.put(`http://localhost:9091/api/stocks/companies/${stockId}/update`, backendPayLoad,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the JWT token
+          },
+        }
+      );
       fetchStocks();
       setSelectedStock(null);
     } catch (error) {
@@ -189,20 +184,20 @@ const EmployeeHomePage = () => {
                         <th>Name</th>
                         <th>Symbol</th>
                         <th>Current Price</th>
-                        <th>24h Change</th>
+                        <th>Last Price</th>
+                        <th>Total Shares</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {filteredStocks.map((stock) => (
                         <tr key={stock.id}>
-                          <td>{stock.id}</td>
+                          <td>{stock.stockId}</td>
                           <td>{stock.name}</td>
                           <td>{stock.symbol}</td>
-                          <td>${stock.currentPrice}</td>
-                          <td className={stock.change24h >= 0 ? "text-success" : "text-danger"}>
-                            {stock.change24h}%
-                          </td>
+                          <td>{stock.open}</td>
+                          <td>{stock.last}</td>
+                          <td>{stock.totalShares}</td>
                           <td>
                             <button
                               className="btn btn-sm btn-outline-warning me-2"
@@ -235,19 +230,19 @@ const EmployeeHomePage = () => {
                   <table className="table table-dark table-hover">
                     <thead>
                       <tr>
-                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Email</th>
-                        <th>Account Type</th>
                         <th>Status</th>
-                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {accounts.map((user) => (
                         <tr key={user.id}>
-                          <td>{user.username}</td>
+                          <td>{user.fname}</td>
+                          <td>{user.lname}</td>
                           <td>{user.email}</td>
-                          <td>{user.accountType}</td>
+                          <td>{user.status}</td>
                           <td>
                             <span className={`badge ${user.active ? "bg-success" : "bg-danger"}`}>
                               {user.active ? "Active" : "Inactive"}
