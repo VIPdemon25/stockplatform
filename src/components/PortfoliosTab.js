@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Plus } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const PortfoliosTab = ({ onSelectPortfolio }) => {
   const [portfolios, setPortfolios] = useState([
@@ -8,6 +9,7 @@ const PortfoliosTab = ({ onSelectPortfolio }) => {
   ])
 
   const [newPortfolioName, setNewPortfolioName] = useState("")
+  const navigate = useNavigate()
 
   const handleCreatePortfolio = (e) => {
     e.preventDefault()
@@ -15,6 +17,12 @@ const PortfoliosTab = ({ onSelectPortfolio }) => {
       setPortfolios([...portfolios, { id: portfolios.length + 1, name: newPortfolioName, value: 0 }])
       setNewPortfolioName("")
     }
+  }
+
+  const handlePortfolioSelect = (portfolio) => {
+    // Select portfolio and navigate to its details page
+    onSelectPortfolio(portfolio)
+    navigate(`/home/portfolios/${portfolio.id}`)
   }
 
   return (
@@ -27,7 +35,7 @@ const PortfoliosTab = ({ onSelectPortfolio }) => {
               <div className="card-body">
                 <h5 className="card-title">{portfolio.name}</h5>
                 <p className="card-text">Value: ${portfolio.value.toLocaleString()}</p>
-                <button className="btn btn-light btn-sm" onClick={() => onSelectPortfolio(portfolio)}>
+                <button className="btn btn-light btn-sm" onClick={() => handlePortfolioSelect(portfolio)}>
                   View Details
                 </button>
               </div>
@@ -55,4 +63,3 @@ const PortfoliosTab = ({ onSelectPortfolio }) => {
 }
 
 export default PortfoliosTab
-
