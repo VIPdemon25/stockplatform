@@ -10,6 +10,7 @@ import PortfolioDetails from "./PortfolioDetails";
 import WatchlistTab from "./WatchlistTab";
 import UpdateAccount from "./UpdateAccount";
 import AccountDetails from "./AccountDetails";
+import axios from "axios";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -25,10 +26,27 @@ const HomePage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("accountId");
-    navigate("/login");
-  };
+    const accountId = sessionStorage.getItem("accountId");
+
+    if (accountId) {
+        axios.post(`http://localhost:9091/v1/logout/${accountId}`)
+            .then(response => {
+                console.log('Logout successful:', response.data);
+                
+                // Remove items from session storage
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("accountId");
+                
+                // Navigate to login page
+                navigate("/login");
+            })
+            .catch(error => {
+                console.error('Logout failed:', error);
+            });
+    } else {
+        console.error('No account ID found in session storage');
+    }
+};
 
   const renderTabContent = () => {
     switch (activeTab) {

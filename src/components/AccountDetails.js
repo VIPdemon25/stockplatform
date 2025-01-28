@@ -18,8 +18,8 @@ const AccountDetails = () => {
     const fetchAccountDetails = async () => {
       try {
         // Get the JWT token from local storage
-        const token = localStorage.getItem("token");
-        const accountId = localStorage.getItem("accountId");
+        const token = sessionStorage.getItem("token");
+        const accountId = sessionStorage.getItem("accountId");
 
         // Make the request with the Authorization header
         const response = await axios.get(`http://localhost:9091/api/stocktrader/${accountId}`, {

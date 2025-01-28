@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, Settings, User, LogOut, Trash2 } from "lucide-react";
+import axios from "axios";
 
 const Navbar = ({
   searchQuery,
@@ -12,16 +13,26 @@ const Navbar = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (
       window.confirm(
         "Are you sure you want to delete your account? This action cannot be undone."
       )
     ) {
-      // Add logic here to delete the account
-      console.log("Account deleted");
-      // Redirect to login page or show a confirmation message
-      navigate("/login");
+      const accountId = sessionStorage.getItem("accountId");
+      const token = sessionStorage.getItem("token");
+      try {
+        await axios.delete(`http://localhost:9091/api/stocktrader/${accountId}`,{
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the JWT token
+          },
+        });
+        console.log("Account deleted");
+        navigate("/login");
+      } catch (error) {
+        console.error("There was an error deleting the account!", error);
+
+      }
     }
   };
 

@@ -24,6 +24,8 @@ const EmployeeHomePage = () => {
   const [filteredStocks, setFilteredStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false); 
+  const [filteredAccounts, setFilteredAccounts] = useState([]);
+  const[searchUserTerm, setSearchUserTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +33,16 @@ const EmployeeHomePage = () => {
     fetchTransactions();
     if (showStockManagement) fetchStocks();
   }, [showStockManagement]);
+
+  useEffect(() => {
+    const filtered = accounts.filter(
+      (account) =>
+        account.fname.toLowerCase().includes(searchUserTerm.toLowerCase()) ||
+        account.lname.toLowerCase().includes(searchUserTerm.toLowerCase()) ||
+        account.email.toLowerCase().includes(searchUserTerm.toLowerCase())
+    );
+    setFilteredAccounts(filtered);
+  },[searchUserTerm, accounts]);
 
   useEffect(() => {
     const filtered = stocks.filter(
@@ -42,7 +54,7 @@ const EmployeeHomePage = () => {
   }, [searchTerm, stocks]);
 
   const fetchAccounts = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       const response = await axios.get(`http://localhost:9091/api/stocktrader`, {
@@ -84,7 +96,7 @@ const EmployeeHomePage = () => {
   };
 
   const fetchStocks = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       const response = await axios.get(`http://localhost:9091/api/stocks`, {
@@ -98,18 +110,24 @@ const EmployeeHomePage = () => {
     }
   };
 
-  const handleStockSubmit = async (newStock) => {
-    try {
-      await axios.post("/api/stocks", newStock);
-      fetchStocks();
-    } catch (error) {
-      console.error("Error registering new stock:", error);
-    }
-  };
+  // const handleStockSubmit = async (newStock) => {
+  //   try {
+  //     await axios.post("/api/stocks", newStock);
+  //     fetchStocks();
+  //   } catch (error) {
+  //     console.error("Error registering new stock:", error);
+  //   }
+  // };
 
   const deleteStock = async (stockId) => {
+    const token = sessionStorage.getItem("token")
     try {
-      await axios.delete(`/api/stocks/${stockId}`);
+      await axios.delete(`http://localhost:9091/api/stocks/${stockId}/delete`,{
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token
+        },
+      });
+      
       fetchStocks();
     } catch (error) {
       console.error("Error deleting stock:", error);
@@ -117,7 +135,7 @@ const EmployeeHomePage = () => {
   };
 
   const handleUpdateStock = async (updatedStock) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const stockId = selectedStock.stockId;
     console.log(selectedStock);
     const backendPayLoad = {
@@ -149,10 +167,41 @@ const EmployeeHomePage = () => {
     }
   };
 
+  // const handleLogout = async () => {
+  //   const accountId = sessionStorage.getItem("accountId");
+  //   try{
+  //   const response = await axios.post(`http://localhost:9091/v1/logout/${accountId}`);
+  //   console.log(response);
+  //   sessionStorage.removeItem("token");
+  //   sessionStorage.removeItem("accountId");
+  //   navigate("/login");
+  //   }catch (error) {
+  //     console.error('Logout failed:', error);
+  // }
+    
+  // };
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    navigate("/login");
-  };
+    const accountId = sessionStorage.getItem("accountId");
+
+    if (accountId) {
+        axios.post(`http://localhost:9091/v1/logout/${accountId}`)
+            .then(response => {
+                console.log('Logout successful:', response.data);
+                
+                // Remove items from session storage
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("accountId");
+                
+                // Navigate to login page
+                navigate("/login");
+            })
+            .catch(error => {
+                console.error('Logout failed:', error);
+            });
+    } else {
+        console.error('No account ID found in session storage');
+    }
+};
 
   return (
     <div className="employee-home container-fluid bg-dark text-light">
@@ -240,7 +289,7 @@ const EmployeeHomePage = () => {
                             </button>
                             <button
                               className="btn btn-sm btn-outline-danger"
-                              onClick={() => deleteStock(stock.id)}
+                              onClick={() => deleteStock(stock.stockId)}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -259,6 +308,20 @@ const EmployeeHomePage = () => {
                   <Users size={20} className="me-2" />
                   User Management
                 </h5>
+                <div className="mb-3">
+                  <div className="input-group">
+                    <span className="input-group-text bg-dark border-primary">
+                      <Search size={18} />
+                    </span>
+                    <input
+                      type="text"
+                      className="form-control bg-dark text-light border-primary"
+                      placeholder="Search users..."
+                      value={searchUserTerm}
+                      onChange={(e) => setSearchUserTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
                 <div className="table-responsive">
                   <table className="table table-dark table-hover">
                     <thead>
@@ -270,7 +333,7 @@ const EmployeeHomePage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {accounts.map((user) => (
+                      {filteredAccounts.map((user) => (
                         <tr key={user.id}>
                           <td>{user.fname}</td>
                           <td>{user.lname}</td>
@@ -300,7 +363,7 @@ const EmployeeHomePage = () => {
         </div>
 
         <div className="col-md-4">
-          <CreateCompany onStockSubmit={handleStockSubmit} />
+          <CreateCompany fetchStocks={fetchStocks} />
 
           <div className="card bg-dark border-primary">
             <div className="card-body">

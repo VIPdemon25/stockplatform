@@ -38,8 +38,8 @@ const UpdateAccount = () => {
           email: values.email,
         }
         
-        const token = localStorage.getItem("token");
-        const accountId = localStorage.getItem("accountId");
+        const token = sessionStorage.getItem("token");
+        const accountId = sessionStorage.getItem("accountId");
         // Send the updated data to the backend using Axios
         const response = await axios.put(
           `http://localhost:9091/api/stocktrader/update/${accountId}`, // Update endpoint
