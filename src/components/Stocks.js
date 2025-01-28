@@ -18,7 +18,8 @@ const Stocks = ({stocks}) => {
     } else {
       setSelectedStock(null)
     }
-  }, [location.search])
+  }, [location.search, stocks]);
+  
 
   const renderStockCard = (stock) => {
     const priceChange = stock.last - stock.open
