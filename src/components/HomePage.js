@@ -6,7 +6,6 @@ import Navbar from "./Navbar"
 import DashboardTab from "./DashboardTab"
 import TradeTab from "./TradeTab"
 import PortfoliosTab from "./PortfoliosTab"
-import PortfolioDetails from "./PortfolioDetails"
 import WatchlistTab from "./WatchlistTab"
 import UpdateAccount from "./UpdateAccount"
 import AccountDetails from "./AccountDetails"
@@ -108,6 +107,10 @@ const HomePage = () => {
   //   }
   // }
 
+  const onBack = () =>{
+    navigate("/home");
+  }
+
   return (
     <div className="homepage bg-dark text-light min-vh-100">
       <Navbar handleLogout={handleLogout} stocks={stocks} />
@@ -154,8 +157,8 @@ const HomePage = () => {
                   <Route path="/" element={<DashboardTab />} />
                   <Route path="/stocks" element={<Stocks stocks={stocks}/>} />
                   <Route path="/trade" element={<TradeTab stocks={stocks}/>} />
-                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} />} />
-                  <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/>
+                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack}/>} />
+                  {/* <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/> */}
                   <Route path="/watchlist" element={<WatchlistTab stocks={stocks}/>} />
                   <Route path="/update-account" element={<UpdateAccount />} />
                   <Route path="/account-details" element={<AccountDetails />} />
