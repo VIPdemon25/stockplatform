@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
 
-const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
+const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
   const [updatedStock, setUpdatedStock] = useState(stock);
 
   const handleInputChange = (e) => {
@@ -69,9 +69,23 @@ const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
             </label>
             <input
               type="number"
-              id="currentPrice"
-              name="currentPrice"
-              value={updatedStock.currentPrice}
+              id="open"
+              name="open"
+              value={updatedStock.open}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 bg-dark border border-primary rounded-md text-light focus:outline-none focus:border-blue-500 transition-colors"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label htmlFor="currentPrice" className="block text-sm font-medium text-gray-400 mb-2">
+              Last Price
+            </label>
+            <input
+              type="number"
+              id="last"
+              name="last"
+              value={updatedStock.last}
               onChange={handleInputChange}
               className="w-full px-4 py-2 bg-dark border border-primary rounded-md text-light focus:outline-none focus:border-blue-500 transition-colors"
               required
@@ -123,14 +137,16 @@ const UpdateCompany = ({ stock, onUpdate, onCancel }) => {
               type="button"
               onClick={onCancel}
               className="btn btn-primary w-50"
+              disabled={isUpdating}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="btn btn-primary w-100"
+              disabled={isUpdating}
             >
-              Update Stock
+              {isUpdating ? "Updating..." : "Update Stock"}
             </button>
           </div>
         </form>

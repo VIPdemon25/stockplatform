@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-const SignUp = () => {
+const SignupEmployee = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
   const [success, setSuccess] = useState(false); // Success state
@@ -51,7 +51,7 @@ const SignUp = () => {
         fname: values.fname,
         lname: values.lname,
         email: values.email,
-        roles: "TRADER",
+        roles: "STOCKADMIN",
       };
 
       try {
@@ -80,14 +80,13 @@ const SignUp = () => {
       <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
         <i className="fas fa-home me-2"></i>Home
       </Link>
-      {/* Add "Signup as Admin" link at the top right */}
-      <Link to="/signup-employee" className="position-absolute top-0 end-0 m-4 text-light  home-link">
-        Signup as Admin
+      <Link to="/signup" className="position-absolute top-0 end-0 m-4 text-light home-link">
+        Signup as Trader
       </Link>
       <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}>
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}>
           <div className="card-body">
-            <h2 className="card-title text-center mb-4 text-primary">Sign Up for Elevate</h2>
+            <h2 className="card-title text-center mb-4 text-primary">Sign Up as Employee</h2>
 
             {/* Success Message */}
             {success && (
@@ -210,4 +209,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignupEmployee;

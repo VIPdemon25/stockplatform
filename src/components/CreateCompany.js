@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 
-const CreateCompany = ({ onStockSubmit }) => {
+const CreateCompany = ({ fetchStocks }) => {
   // Validation schema using Yup
   const validationSchema = Yup.object({
     name: Yup.string().required("Stock Name is required"),
@@ -36,24 +36,32 @@ const CreateCompany = ({ onStockSubmit }) => {
         symbol: values.symbol,
         totalShares: values.sharesToRelease,
         type: values.companyType,
-        entryPrice: values.entryPrice,
+        open: values.entryPrice,
+        last: 0,
       };
-
+      const token = sessionStorage.getItem("token");
+      formik.setSubmitting(true);
       try {
         // Send the payload to the backend using Axios
-        const response = await axios.post("/api/stocks", backendPayload);
+        const response = await axios.post("http://localhost:9091/api/stocks/companies/new", backendPayload,{
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the JWT token
+          },
+        });
 
         // Log the response (for debugging)
         console.log("Stock registration successful:", response.data);
 
         // Call the parent function (if needed)
-        onStockSubmit(backendPayload);
-
+        
+        fetchStocks();
         // Reset the form
         formik.resetForm();
       } catch (error) {
         // Handle errors (e.g., display error message)
         console.error("Stock registration failed:", error.response?.data || error.message);
+      } finally{
+        formik.setSubmitting(false);
       }
     },
   });
@@ -168,8 +176,8 @@ const CreateCompany = ({ onStockSubmit }) => {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="btn btn-primary w-100">
-            Register Stock
+          <button type="submit" className="btn btn-primary w-100" disabled={formik.isSubmitting}>
+            {formik.isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </form>
       </div>
