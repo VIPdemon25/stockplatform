@@ -1,18 +1,79 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
+import axios from "axios";
 
-const TradeTab = () => {
-  const [tradeType, setTradeType] = useState("buy")
-  const [symbol, setSymbol] = useState("")
-  const [quantity, setQuantity] = useState("")
-  const [price, setPrice] = useState("")
-  const [useRiskManagement, setUseRiskManagement] = useState(false)
-  const [positionSize, setPositionSize] = useState("")
-  const [stopLoss, setStopLoss] = useState("")
+const TradeTab = ({ stocks }) => {
+  const [tradeType, setTradeType] = useState("buy");
+  const [symbol, setSymbol] = useState("");
+  const [stockName, setStockName] = useState(""); // add stock name
+  const [quantity, setQuantity] = useState("");
+  // const [price, setPrice] = useState("");
+  const [useRiskManagement, setUseRiskManagement] = useState(false);
+  const [riskPerTrade, setRiskPerTrade] = useState("");
+  const [stopLoss, setStopLoss] = useState("");
 
-  const handleTrade = (e) => {
-    e.preventDefault()
-    console.log("Trade:", { tradeType, symbol, quantity, price, useRiskManagement, positionSize, stopLoss })
-  }
+  const handleTrade = async (e) => {
+    e.preventDefault();
+    const stock = stocks.find(stock => stock.symbol === symbol && stock.name === stockName);
+
+    if (!stock) {
+      alert("Invalid stock symbol or name. Please enter correct details.");
+      return;
+    }
+    const id = stock.stockId;
+    const token = sessionStorage.getItem("token");
+    const price_per_share = stock.open;
+    const total_price = stock.open * quantity;
+    const accountId = sessionStorage.getItem("accountId");
+    // const risk = (riskPerTrade/100)*total_price;
+    const unit_risk=(riskPerTrade/100)*price_per_share;
+    // const u_stopLoss = stopLoss * quantity;
+    const basePayload = { stockId: id,transType: tradeType, symbol, stockName, numShares:quantity, accountId };
+    const payloads = {
+      buyWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
+      buyWithRisk: { ...basePayload, typeOfPurchase: "positionSizing", typeOfSell: "marketplan", riskPerTrade:unit_risk, stopLoss, entryPrice: price_per_share },
+      sellWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
+      sellWithRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "stoploss", riskPerTrade: 0, stopLoss, entryPrice: total_price }
+    };
+
+    // send data to backend with appropriate payload
+    try {
+      if (tradeType === "buy") {
+        console.log("Payload without risk management (buy):", payloads.buyWithoutRisk);
+        console.log("Payload with risk management (buy):", payloads.buyWithRisk);
+        if (useRiskManagement) {
+          await axios.post('http://localhost:9090/api/orders/buy/positionSizing', payloads.buyWithRisk,{
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          });
+        } else {
+          await axios.post('http://localhost:9090/api/orders/buy/MarketPlan', payloads.buyWithoutRisk,{
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          });
+        }
+      } else if (tradeType === "sell") {
+        console.log("Payload without risk management (sell):", payloads.sellWithoutRisk);
+        console.log("Payload with risk management (sell):", payloads.sellWithRisk);
+        if (useRiskManagement) {
+          await axios.post('http://localhost:9090/api/orders/sell/stopLoss', payloads.sellWithRisk,{
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          });
+        } else {
+          await axios.post('http://localhost:9090/api/orders/sell/MarketPlan', payloads.sellWithoutRisk,{
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error sending trade data to backend:", error);
+    }
+  };
 
   return (
     <div className="trade animate__animated animate__fadeIn">
@@ -58,6 +119,16 @@ const TradeTab = () => {
         </div>
         <div className="mb-3">
           <input
+            type="text"
+            className="form-control"
+            placeholder="Stock Name"
+            value={stockName}
+            onChange={(e) => setStockName(e.target.value)} // set stock name
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <input
             type="number"
             className="form-control"
             placeholder="Quantity"
@@ -66,7 +137,7 @@ const TradeTab = () => {
             required
           />
         </div>
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <input
             type="number"
             className="form-control"
@@ -75,7 +146,7 @@ const TradeTab = () => {
             onChange={(e) => setPrice(e.target.value)}
             required
           />
-        </div>
+        </div> */}
         <div className="mb-3 form-check">
           <input
             type="checkbox"
@@ -89,34 +160,36 @@ const TradeTab = () => {
           </label>
         </div>
         {useRiskManagement && (
-          <>
-            <div className="mb-3">
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Position Sizing (%)"
-                value={positionSize}
-                onChange={(e) => setPositionSize(e.target.value)}
-              />
-            </div>
-            <div className="mb-3">
-              <input
-                type="number"
-                className="form-control"
-                placeholder="Stop Loss"
-                value={stopLoss}
-                onChange={(e) => setStopLoss(e.target.value)}
-              />
-            </div>
-          </>
-        )}
+  <>
+    <div className="mb-3">
+      <input
+        type="number"
+        className="form-control"
+        placeholder="Stop Loss"
+        value={stopLoss}
+        onChange={(e) => setStopLoss(e.target.value)}
+      />
+    </div>
+    {tradeType === "buy" && (
+      <div className="mb-3">
+        <input
+          type="number"
+          className="form-control"
+          placeholder="Risk Per Trade (%)"
+          value={riskPerTrade}
+          onChange={(e) => setRiskPerTrade(e.target.value)}
+        />
+      </div>
+    )}
+  </>
+)}
+
         <button type="submit" className="btn btn-primary">
           Place Order
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default TradeTab
-
+export default TradeTab;

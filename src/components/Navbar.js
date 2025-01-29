@@ -44,7 +44,7 @@ const Navbar = ({ handleLogout, stocks }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">
+        <Link to="/home" className="navbar-brand">
           Elevate
         </Link>
         <div className="d-flex align-items-center position-relative" style={{ zIndex: 1050 }}>
