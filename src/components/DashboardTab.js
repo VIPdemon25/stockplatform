@@ -1,16 +1,55 @@
-import React from "react"
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts"
+import React, { useMemo } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-const DashboardTab = () => {
-  const stockData = [
-    { name: "Jan", AAPL: 4000, GOOGL: 2400, AMZN: 2400 },
-    { name: "Feb", AAPL: 3000, GOOGL: 1398, AMZN: 2210 },
-    { name: "Mar", AAPL: 2000, GOOGL: 9800, AMZN: 2290 },
-    { name: "Apr", AAPL: 2780, GOOGL: 3908, AMZN: 2000 },
-    { name: "May", AAPL: 1890, GOOGL: 4800, AMZN: 2181 },
-    { name: "Jun", AAPL: 2390, GOOGL: 3800, AMZN: 2500 },
-    { name: "Jul", AAPL: 3490, GOOGL: 4300, AMZN: 2100 },
-  ]
+const DashboardTab = ({ stockData }) => {
+  // Dummy stock data (will be replaced with props later)
+  const defaultStockData = [
+    { stockId: 1, name: "Apple Inc.", symbol: "AAPL", type: "technology", open: 150.25, last: 151.5 },
+    { stockId: 2, name: "Microsoft Corporation", symbol: "MSFT", type: "technology", open: 280.75, last: 282.0 },
+    { stockId: 3, name: "Amazon.com, Inc.", symbol: "AMZN", type: "technology", open: 3380.0, last: 3395.5 },
+    { stockId: 4, name: "Alphabet Inc.", symbol: "GOOGL", type: "technology", open: 2410.0, last: 2415.75 },
+    { stockId: 5, name: "Tesla, Inc.", symbol: "TSLA", type: "technology", open: 690.5, last: 678.25 },
+    { stockId: 6, name: "JPMorgan Chase & Co.", symbol: "JPM", type: "finance", open: 155.0, last: 156.75 },
+    { stockId: 7, name: "Bank of America Corp", symbol: "BAC", type: "finance", open: 41.5, last: 41.75 },
+    { stockId: 8, name: "Wells Fargo & Co", symbol: "WFC", type: "finance", open: 46.75, last: 46.25 },
+    { stockId: 9, name: "Caterpillar Inc.", symbol: "CAT", type: "construction", open: 235.25, last: 239.0 },
+    { stockId: 10, name: "Deere & Company", symbol: "DE", type: "construction", open: 355.0, last: 352.75 },
+  ];
+
+  // Use provided stock data or fallback to dummy data
+  const stocks = stockData && stockData.length ? stockData : defaultStockData;
+
+  // Function to get a random subset of 3 stocks
+  const getRandomStocks = (stocks, count = 3) => {
+    const shuffled = [...stocks].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+
+  // Function to generate random month labels
+  const getRandomMonths = () => ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    .sort(() => 0.5 - Math.random()).slice(0, 7);
+
+  // Function to generate random fluctuations for stock prices
+  const getRandomPrice = (basePrice) => {
+    return +(basePrice * (0.65 + Math.random() * 0.70)).toFixed(2); // Fluctuate within ±35% and round to 2 decimals
+};
+
+
+
+
+  // Memoized stock data to avoid recalculations on re-render
+  const transformedStockData = useMemo(() => {
+    const selectedStocks = getRandomStocks(stocks, 3);
+    const months = getRandomMonths();
+
+    return months.map((month) => {
+      const dataPoint = { name: month };
+      selectedStocks.forEach(stock => {
+        dataPoint[stock.symbol] = getRandomPrice(Math.max(stock.open, stock.last));
+      });
+      return dataPoint;
+    });
+  }, [stocks]);
 
   return (
     <div className="dashboard animate__animated animate__fadeIn">
@@ -21,15 +60,15 @@ const DashboardTab = () => {
             <div className="card-body">
               <h5 className="card-title text-primary">Stock Performance</h5>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={stockData}>
+                <LineChart data={transformedStockData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#444" />
                   <XAxis dataKey="name" stroke="#888" />
                   <YAxis stroke="#888" />
                   <Tooltip contentStyle={{ backgroundColor: "#333", border: "none" }} />
                   <Legend />
-                  <Line type="monotone" dataKey="AAPL" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey="GOOGL" stroke="#82ca9d" />
-                  <Line type="monotone" dataKey="AMZN" stroke="#ffc658" />
+                  {Object.keys(transformedStockData[0]).filter(key => key !== "name").map((stock, index) => (
+                    <Line key={stock} type="monotone" dataKey={stock} stroke={["#8884d8", "#82ca9d", "#ffc658"][index]} />
+                  ))}
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -55,47 +94,8 @@ const DashboardTab = () => {
           </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col-md-6 mb-4">
-          <div className="card bg-dark">
-            <div className="card-body">
-              <h5 className="card-title text-primary">Top Gainers</h5>
-              <ul className="list-unstyled text-light">
-                <li>
-                  AAPL - Apple Inc. <span className="text-success">+2.5%</span>
-                </li>
-                <li>
-                  GOOGL - Alphabet Inc. <span className="text-success">+1.8%</span>
-                </li>
-                <li>
-                  AMZN - Amazon.com Inc. <span className="text-success">+1.2%</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6 mb-4">
-          <div className="card bg-dark">
-            <div className="card-body">
-              <h5 className="card-title text-primary">Top Losers</h5>
-              <ul className="list-unstyled text-light">
-                <li>
-                  FB - Facebook Inc. <span className="text-danger">-1.5%</span>
-                </li>
-                <li>
-                  TSLA - Tesla Inc. <span className="text-danger">-0.8%</span>
-                </li>
-                <li>
-                  NFLX - Netflix Inc. <span className="text-danger">-0.6%</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardTab
-
+export default DashboardTab;
