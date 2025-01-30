@@ -1,56 +1,55 @@
-import React, { useEffect, useState } from "react"
-import { ArrowLeft } from "lucide-react"
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
+import React, { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import axios from "axios";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"]
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-const PortfolioTab = ({ onBack }) => {
-  const [portfolio, setPortfolio] = useState(null)
-  const [holdings, setHoldings] = useState([])
+const PortfolioTab = ({ onBack, stocks }) => {
+  const [portfolio, setPortfolio] = useState(null);
+  const [holdings, setHoldings] = useState([]);
 
-  // Dummy data for portfolio and holdings
-  const dummyPortfolio = {
-    value: 75000,
-  }
-
-  const dummyHoldings = [
-    { name: "AAPL", value: 30000, percentage: 40 },
-    { name: "GOOGL", value: 22500, percentage: 30 },
-    { name: "AMZN", value: 15000, percentage: 20 },
-    { name: "MSFT", value: 7500, percentage: 10 },
-  ]
-
-  // Fetch portfolio and holdings from API (commented out for now)
-  // useEffect(() => {
-  //   const token = sessionStorage.getItem("token");
-  //   axios
-  //     .get("http://localhost:9091/api/portfolio", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setPortfolio(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching portfolio:", error);
-  //     });
-
-  //   axios
-  //     .get("http://localhost:9091/api/holdings", {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     })
-  //     .then((response) => {
-  //       setHoldings(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching holdings:", error);
-  //     });
-  // }, []);
-
-  // Use dummy data for now
+  // Fetch portfolio and holdings from API
   useEffect(() => {
-    setPortfolio(dummyPortfolio)
-    setHoldings(dummyHoldings)
-  }, [])
+    const token = sessionStorage.getItem("token");
+    const accountId = sessionStorage.getItem("accountId");
+
+    // Fetch holdings
+    axios
+      .get(`http://localhost:7070/api/holdings/${accountId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const fetchedHoldings = response.data;
+
+        // Map holdings to stocks and calculate values
+        const updatedHoldings = fetchedHoldings.map((holding) => {
+          const stock = stocks.find((stock) => stock.stockId === holding.stockId);
+          const value = holding.boughtAt;
+          return {
+            ...holding,
+            name: stock ? stock.symbol : "Unknown",
+            value: value,
+          };
+        });
+
+        const totalValue = updatedHoldings.reduce((sum, holding) => sum + holding.value, 0);
+
+        // Calculate the percentage for each holding
+        const updatedHoldingsWithPercentage = updatedHoldings.map((holding) => ({
+          ...holding,
+          percentage: ((holding.value / totalValue) * 100).toFixed(2),
+        }));
+
+        setHoldings(updatedHoldingsWithPercentage);
+
+        // Set portfolio value
+        setPortfolio({ value: totalValue });
+      })
+      .catch((error) => {
+        console.error("Error fetching holdings:", error);
+      });
+  }, [stocks]);
 
   if (!portfolio) {
     return (
@@ -60,7 +59,7 @@ const PortfolioTab = ({ onBack }) => {
           <ArrowLeft size={18} className="me-2" /> Back to Dashboard
         </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -118,11 +117,11 @@ const PortfolioTab = ({ onBack }) => {
                 </tr>
               </thead>
               <tbody>
-                {holdings.map((stock) => (
-                  <tr key={stock.name}>
-                    <td>{stock.name}</td>
-                    <td>${stock.value.toLocaleString()}</td>
-                    <td>{stock.percentage}%</td>
+                {holdings.map((holding) => (
+                  <tr key={holding.holdingId}>
+                    <td>{holding.name}</td>
+                    <td>${holding.value.toLocaleString()}</td>
+                    <td>{holding.percentage}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -131,7 +130,7 @@ const PortfolioTab = ({ onBack }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PortfolioTab
+export default PortfolioTab;

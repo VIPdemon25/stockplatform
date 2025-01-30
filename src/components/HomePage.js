@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, Routes, Route, useLocation } from "react-router-dom"
 import { Eye, DollarSign, Briefcase, TrendingUp, BarChart2 } from "lucide-react"
+import axios from "axios"
 
 import Navbar from "./Navbar"
 import DashboardTab from "./DashboardTab"
@@ -10,7 +11,6 @@ import WatchlistTab from "./WatchlistTab"
 import UpdateAccount from "./UpdateAccount"
 import AccountDetails from "./AccountDetails"
 import Stocks from "./Stocks"
-import axios from "axios"
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -63,9 +63,9 @@ const HomePage = () => {
     }
   }, [location])
 
-  const handleBackToPortfolios = () => {
-    navigate("/home/portfolios")  // navigate back to the portfolios page
-  }
+  // const handleBackToPortfolios = () => {
+  //   navigate("/home/portfolios")  // navigate back to the portfolios page
+  // }
   const handleLogout = () => {
     const accountId = sessionStorage.getItem("accountId")
 
@@ -157,7 +157,7 @@ const HomePage = () => {
                   <Route path="/" element={<DashboardTab stocks={stocks} />} />
                   <Route path="/stocks" element={<Stocks stocks={stocks}/>} />
                   <Route path="/trade" element={<TradeTab stocks={stocks}/>} />
-                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack}/>} />
+                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack} stocks={stocks}/>} />
                   {/* <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/> */}
                   <Route path="/watchlist" element={<WatchlistTab stocks={stocks}/>} />
                   <Route path="/update-account" element={<UpdateAccount />} />
