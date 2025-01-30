@@ -154,7 +154,7 @@ const HomePage = () => {
             <div className="card bg-dark border-0">
               <div className="card-body">
                 <Routes>
-                  <Route path="/" element={<DashboardTab />} />
+                  <Route path="/" element={<DashboardTab stocks={stocks} />} />
                   <Route path="/stocks" element={<Stocks stocks={stocks}/>} />
                   <Route path="/trade" element={<TradeTab stocks={stocks}/>} />
                   <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack}/>} />

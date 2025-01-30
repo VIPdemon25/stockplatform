@@ -130,7 +130,8 @@ const EmployeeHomePage = () => {
       
       fetchStocks();
     } catch (error) {
-      console.error("Error deleting stock:", error);
+      alert("This stock has trades registered to it, so it can't be deleted.");
+      return;
     }
   };
 

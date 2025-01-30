@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import axios from "axios";
 
 // Dummy stock data for testing
 const stockList = [
@@ -86,14 +87,19 @@ const DashboardTab = ({ stocks = stockList }) => {
 
   useEffect(() => {
     // Commenting out fetching logic for now
-    // axios
-    //   .get("/api/account") // Replace with your actual endpoint
-    //   .then((response) => {
-    //     setAccountName(response.data.accountName); // Assuming accountName is part of the response
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching account details:", error);
-    //   });
+    const token = sessionStorage.getItem("token");
+    const accountId = sessionStorage.getItem("accountId");
+    axios.get(`http://localhost:9091/api/stocktrader/${accountId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the JWT token
+      },
+    }) // Replace with your actual endpoint
+      .then((response) => {
+        setAccountName(response.data.fname); // Assuming accountName is part of the response
+      })
+      .catch((error) => {
+        console.error("Error fetching account details:", error);
+      });
 
     // Randomly select 3 stocks for the graph from the passed stocks prop
     const shuffledStocks = [...stocks].sort(() => 0.5 - Math.random());

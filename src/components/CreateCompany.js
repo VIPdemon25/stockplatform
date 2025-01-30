@@ -143,9 +143,9 @@ const CreateCompany = ({ fetchStocks }) => {
                 <option value="" disabled>
                   Select Type of Company
                 </option>
-                <option value="Public">Public</option>
-                <option value="Private">Private</option>
-                <option value="Startup">Startup</option>
+                <option value="construction">Construction</option>
+              <option value="technology">Technology</option>
+              <option value="finance">Finance</option>
                 <option value="Other">Other</option>
               </select>
               <span className="position-absolute end-0 top-0 bottom-0 d-flex align-items-center pe-3 bg-transparent">
