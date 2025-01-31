@@ -2,53 +2,66 @@ import React, { useState, useEffect } from "react";
 import { Plus, X, Trash2 } from "lucide-react";
 
 const WatchlistTab = ({ stocks }) => {
-  const [watchlist, setWatchlist] = useState([]);
+  const [watchlist1, setWatchlist1] = useState([]);
+  const [watchlist2, setWatchlist2] = useState([]);
   const [newSymbol, setNewSymbol] = useState("");
   const [showAddStock, setShowAddStock] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [activeWatchlist, setActiveWatchlist] = useState(1); // 1 for watchlist1, 2 for watchlist2
 
   // Function to get current user ID from session storage
   const getCurrentUserID = () => {
     return sessionStorage.getItem("accountId");
   };
 
-  // Load watchlist from localStorage on component mount
+  // Load watchlists from localStorage on component mount
   useEffect(() => {
     const currentUserID = getCurrentUserID();
     if (currentUserID) {
-      const storedUserWatchlist = localStorage.getItem(`watchlist_${currentUserID}`);
-      if (storedUserWatchlist) {
-        setWatchlist(JSON.parse(storedUserWatchlist));
-        console.log(`Loaded watchlist for user ${currentUserID} from localStorage:`, JSON.parse(storedUserWatchlist));
+      const storedUserWatchlist1 = localStorage.getItem(`watchlist1_${currentUserID}`);
+      const storedUserWatchlist2 = localStorage.getItem(`watchlist2_${currentUserID}`);
+      if (storedUserWatchlist1) {
+        setWatchlist1(JSON.parse(storedUserWatchlist1));
+      }
+      if (storedUserWatchlist2) {
+        setWatchlist2(JSON.parse(storedUserWatchlist2));
       }
       setIsLoaded(true);
     }
   }, []);
 
-  // Save watchlist to localStorage, but only after the initial load
+  // Save watchlists to localStorage, but only after the initial load
   useEffect(() => {
     const currentUserID = getCurrentUserID();
     if (isLoaded && currentUserID) {
-      localStorage.setItem(`watchlist_${currentUserID}`, JSON.stringify(watchlist));
-      console.log(`Saved watchlist for user ${currentUserID} to localStorage:`, watchlist);
+      localStorage.setItem(`watchlist1_${currentUserID}`, JSON.stringify(watchlist1));
+      localStorage.setItem(`watchlist2_${currentUserID}`, JSON.stringify(watchlist2));
     }
-  }, [watchlist, isLoaded]);
+  }, [watchlist1, watchlist2, isLoaded]);
 
   const handleAddToWatchlist = (symbol) => {
-    if (watchlist.some((stock) => stock.symbol === symbol)) {
-      return;
-    }
-
     const stock = stocks.find((s) => s.symbol === symbol);
     if (stock) {
-      setWatchlist((prev) => [...prev, stock]);
+      if (activeWatchlist === 1) {
+        if (!watchlist1.some((s) => s.symbol === symbol)) {
+          setWatchlist1((prev) => [...prev, stock]);
+        }
+      } else {
+        if (!watchlist2.some((s) => s.symbol === symbol)) {
+          setWatchlist2((prev) => [...prev, stock]);
+        }
+      }
       setNewSymbol("");
       setShowAddStock(false);
     }
   };
 
   const handleDeleteFromWatchlist = (symbol) => {
-    setWatchlist((prev) => prev.filter((stock) => stock.symbol !== symbol));
+    if (activeWatchlist === 1) {
+      setWatchlist1((prev) => prev.filter((stock) => stock.symbol !== symbol));
+    } else {
+      setWatchlist2((prev) => prev.filter((stock) => stock.symbol !== symbol));
+    }
   };
 
   const calculatePriceChange = (stock) => {
@@ -61,9 +74,25 @@ const WatchlistTab = ({ stocks }) => {
     };
   };
 
+  const activeWatchlistData = activeWatchlist === 1 ? watchlist1 : watchlist2;
+
   return (
     <div className="watchlist animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Watchlist</h2>
+      <div className="mb-3">
+        <button
+          className={`btn btn-outline-primary me-2 ${activeWatchlist === 1 ? "active" : ""}`}
+          onClick={() => setActiveWatchlist(1)}
+        >
+          Watchlist 1
+        </button>
+        <button
+          className={`btn btn-outline-primary ${activeWatchlist === 2 ? "active" : ""}`}
+          onClick={() => setActiveWatchlist(2)}
+        >
+          Watchlist 2
+        </button>
+      </div>
       <div className="table-responsive">
         <table className="table table-dark table-hover">
           <thead>
@@ -76,7 +105,7 @@ const WatchlistTab = ({ stocks }) => {
             </tr>
           </thead>
           <tbody>
-            {watchlist.map((stock) => {
+            {activeWatchlistData.map((stock) => {
               const { priceChangePercent, isPositive } = calculatePriceChange(stock);
 
               return (
@@ -125,7 +154,7 @@ const WatchlistTab = ({ stocks }) => {
               {stocks
                 .filter((s) => 
                   s.symbol.toLowerCase().includes(newSymbol.toLowerCase()) &&
-                  !watchlist.some((stock) => stock.symbol === s.symbol)
+                  !activeWatchlistData.some((stock) => stock.symbol === s.symbol)
                 )
                 .map((stock, index) => (
                   <button
