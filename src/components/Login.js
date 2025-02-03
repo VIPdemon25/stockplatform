@@ -58,7 +58,10 @@ const Login = () => {
   });
 
   return (
-    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
+    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
+    style={{
+      background: "linear-gradient(135deg, #000000, #1D2671)",
+    }}>
       <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
         <i className="fas fa-home me-2"></i>Home
       </Link>
