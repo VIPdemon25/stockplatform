@@ -6,92 +6,44 @@ import axios from "axios";
 const AllTrades = () => {
   const [trades, setTrades] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  // const [fetchSuccess, setFetchSuccess] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      const accountId = sessionStorage.getItem("accountId");
+      const token = sessionStorage.getItem("token");
       try {
-        let tradesData;
+        let response;
         if (showAll) {
           // Fetch all trades using Axios
-          // const response = await axios.get('/api/trades/all');
-          tradesData = [
-            {
-              id: 1,
-              symbol: "AAPL",
-              type: "buy",
-              amount: 1000,
-              shares: 5,
-              datetime: "2023-05-01T12:30:00",
-              typeofPurchase: "positionSizing", // Can be "marketPlan" or "positionSizing"
-              typeofSell: null, // Only for sell trades
-              stopLoss: null, // Only for sell trades with typeofSell: "stopLoss"
+          response = await axios.get(`http://localhost:9091/api/stock/${accountId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
             },
-            {
-              id: 2,
-              symbol: "GOOGL",
-              type: "sell",
-              amount: 1500,
-              shares: 2,
-              datetime: "2023-05-02T09:00:00",
-              typeofPurchase: null, // Only for buy trades
-              typeofSell: "marketPlan", // Can be "marketPlan" or "stopLoss"
-              stopLoss: "Percentage", // Ignored if typeofSell is "marketPlan"
-            },
-            {
-              id: 3,
-              symbol: "MSFT",
-              type: "buy",
-              amount: 800,
-              shares: 3,
-              datetime: "2023-05-03T15:45:00",
-              typeofPurchase: "marketPlan", // Can be "marketPlan" or "positionSizing"
-              typeofSell: null, // Only for sell trades
-              stopLoss: null, // Only for sell trades with typeofSell: "stopLoss"
-            },
-            {
-              id: 4,
-              symbol: "AMZN",
-              type: "sell",
-              amount: 2000,
-              shares: 1,
-              datetime: "2023-05-04T10:10:00",
-              typeofPurchase: null, // Only for buy trades
-              typeofSell: "stopLoss", // Can be "marketPlan" or "stopLoss"
-              stopLoss: "Value", // Only for sell trades with typeofSell: "stopLoss"
-            },
-          ];
+          });
         } else {
           // Fetch recent trades using Axios
-          // const response = await axios.get('/api/trades/recent');
-          tradesData = [
-            {
-              id: 3,
-              symbol: "MSFT",
-              type: "buy",
-              amount: 800,
-              shares: 3,
-              datetime: "2023-05-03T15:45:00",
-              typeofPurchase: "marketPlan", // Can be "marketPlan" or "positionSizing"
-              typeofSell: "stopLoss", // Only for sell trades
-              stopLoss: 5, // Only for sell trades with typeofSell: "stopLoss"
+          response = await axios.get(`http://localhost:9091/api/stock/trades/last5days/${accountId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
             },
-            {
-              id: 4,
-              symbol: "AMZN",
-              type: "sell",
-              amount: 2000,
-              shares: 1,
-              datetime: "2023-05-04T10:10:00",
-              typeofPurchase: null, // Only for buy trades
-              typeofSell: "stopLoss", // Can be "marketPlan" or "stopLoss"
-              stopLoss: "Value", // Only for sell trades with typeofSell: "stopLoss"
-            },
-          ];
+          });
         }
+        const tradesData = response.data.map((trade) => ({
+          id: trade.orderId,
+          symbol: trade.symbol,
+          type: trade.transType,
+          amount: trade.tradedAt,
+          shares: trade.numShares,
+          datetime: trade.dateOfOrder,
+          typeOfPurchase: trade.typeOfPurchase,
+          typeOfSell: trade.typeOfSell,
+        }));
         setTrades(tradesData);
+        // setFetchSuccess(true); // Set to true upon successful fetch
       } catch (error) {
         console.error("Error fetching trades:", error);
-        // Handle errors appropriately (e.g., display an error message to the user)
+        // setFetchSuccess(false); // Set to false if there's an error fetching
       }
     };
 
@@ -99,14 +51,13 @@ const AllTrades = () => {
   }, [showAll]);
 
   const getTradeTypeInfo = (trade) => {
-    if (trade.type === "buy") {
-      // For buy trades, check typeofPurchase
-      return trade.typeofPurchase === "marketPlan" ? "Market Plan" : "Position Sizing";
-    } else if (trade.type === "sell") {
-      // For sell trades, check typeofSell
-      return trade.typeofSell === "marketPlan" ? "Market Plan" : "Stop Loss";
+    if (trade.type === "buy" && trade.typeOfPurchase === "positionSizing") {
+      return "Position Sizing";
+    } else if (trade.type === "sell" && trade.typeOfSell === "stopLoss") {
+      return "Stop Loss";
+    } else {
+      return "Market Plan";
     }
-    return "Unknown";
   };
 
   const getTypeColor = (type) => {
@@ -134,6 +85,17 @@ const AllTrades = () => {
           {showAll ? "Show Recent" : "Show All"}
         </button>
       </div>
+
+      {/* {fetchSuccess ? (
+        <div className="alert alert-success" role="alert">
+          All trades fetched successfully!
+        </div>
+      ) : (
+        <div className="alert alert-danger" role="alert">
+          Error fetching trades. Please try again.
+        </div>
+      )} */}
+      
       <div className="card bg-dark">
         <div className="card-body">
           {trades.map((trade) => {
@@ -163,7 +125,7 @@ const AllTrades = () => {
                     </h5>
                     <p className="mb-0 text-light">
                       <DollarSign size={14} className="me-1" />
-                      {trade.amount.toFixed(2)}
+                      {trade.amount !== undefined ? trade.amount.toFixed(2) : "N/A"}
                     </p>
                   </div>
                 </div>

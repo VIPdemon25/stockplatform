@@ -11,7 +11,7 @@ const Navbar = ({ handleLogout, stocks }) => {
   const navigate = useNavigate()
 
   const handleSearch = (e) => {
-    e.preventDefault()
+    e.preventDefault() // so tht the page does not reload
     setShowSearchResults(true)
     // console.log(stocks);
 
@@ -44,7 +44,7 @@ const Navbar = ({ handleLogout, stocks }) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
-        <Link to="/" className="navbar-brand">
+        <Link to="/home" className="navbar-brand">
           Elevate
         </Link>
         <div className="d-flex align-items-center position-relative" style={{ zIndex: 1050 }}>

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, Routes, Route, useLocation } from "react-router-dom"
 import { Eye, DollarSign, Briefcase, TrendingUp, BarChart2 } from "lucide-react"
+import axios from "axios"
 
 import Navbar from "./Navbar"
 import DashboardTab from "./DashboardTab"
 import TradeTab from "./TradeTab"
 import PortfoliosTab from "./PortfoliosTab"
-import PortfolioDetails from "./PortfolioDetails"
 import WatchlistTab from "./WatchlistTab"
 import UpdateAccount from "./UpdateAccount"
 import AccountDetails from "./AccountDetails"
 import Stocks from "./Stocks"
-import axios from "axios"
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
@@ -21,31 +20,34 @@ const HomePage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const dummyStocks = [
-      { stockId: 1, name: "Apple Inc.", symbol: "AAPL", type: "technology", open: 150.25, last: 151.5 },
-      { stockId: 2, name: "Microsoft Corporation", symbol: "MSFT", type: "technology", open: 280.75, last: 282.0 },
-      { stockId: 3, name: "Amazon.com, Inc.", symbol: "AMZN", type: "technology", open: 3380.0, last: 3395.5 },
-      { stockId: 4, name: "Alphabet Inc.", symbol: "GOOGL", type: "technology", open: 2410.0, last: 2415.75 },
-      { stockId: 5, name: "Tesla, Inc.", symbol: "TSLA", type: "technology", open: 690.5, last: 678.25 },
-      { stockId: 6, name: "JPMorgan Chase & Co.", symbol: "JPM", type: "finance", open: 155.0, last: 156.75 },
-      { stockId: 7, name: "Bank of America Corp", symbol: "BAC", type: "finance", open: 41.5, last: 41.75 },
-      { stockId: 8, name: "Wells Fargo & Co", symbol: "WFC", type: "finance", open: 46.75, last: 46.25 },
-      { stockId: 9, name: "Caterpillar Inc.", symbol: "CAT", type: "construction", open: 235.25, last: 239.0 },
-      { stockId: 10, name: "Deere & Company", symbol: "DE", type: "construction", open: 355.0, last: 352.75 },
-    ]
-    setStocks(dummyStocks)
+    // const dummyStocks = [
+    //   { stockId: 1, name: "Apple Inc.", symbol: "AAPL", type: "technology", open: 150.25, last: 151.5 },
+    //   { stockId: 2, name: "Microsoft Corporation", symbol: "MSFT", type: "technology", open: 280.75, last: 282.0 },
+    //   { stockId: 3, name: "Amazon.com, Inc.", symbol: "AMZN", type: "technology", open: 3380.0, last: 3395.5 },
+    //   { stockId: 4, name: "Alphabet Inc.", symbol: "GOOGL", type: "technology", open: 2410.0, last: 2415.75 },
+    //   { stockId: 5, name: "Tesla, Inc.", symbol: "TSLA", type: "technology", open: 690.5, last: 678.25 },
+    //   { stockId: 6, name: "JPMorgan Chase & Co.", symbol: "JPM", type: "finance", open: 155.0, last: 156.75 },
+    //   { stockId: 7, name: "Bank of America Corp", symbol: "BAC", type: "finance", open: 41.5, last: 41.75 },
+    //   { stockId: 8, name: "Wells Fargo & Co", symbol: "WFC", type: "finance", open: 46.75, last: 46.25 },
+    //   { stockId: 9, name: "Caterpillar Inc.", symbol: "CAT", type: "construction", open: 235.25, last: 239.0 },
+    //   { stockId: 10, name: "Deere & Company", symbol: "DE", type: "construction", open: 355.0, last: 352.75 },
+    // ]
+    // setStocks(dummyStocks)
 
     // Uncomment to fetch data from an API
-    /*
+    const token = sessionStorage.getItem("token");
     axios
-      .get("your-api-url-here")
+      .get("http://localhost:9091/api/stocks",{
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token
+        },
+      })
       .then((response) => {
         setStocks(response.data)
       })
       .catch((error) => {
         console.error("Error fetching stock data:", error)
       })
-    */
     // Sync the active tab with the current URL
     const path = location.pathname
     if (path.includes("/stocks")) {
@@ -61,9 +63,9 @@ const HomePage = () => {
     }
   }, [location])
 
-  const handleBackToPortfolios = () => {
-    navigate("/home/portfolios")  // navigate back to the portfolios page
-  }
+  // const handleBackToPortfolios = () => {
+  //   navigate("/home/portfolios")  // navigate back to the portfolios page
+  // }
   const handleLogout = () => {
     const accountId = sessionStorage.getItem("accountId")
 
@@ -104,6 +106,10 @@ const HomePage = () => {
   //       return <DashboardTab />
   //   }
   // }
+
+  const onBack = () =>{
+    navigate("/home");
+  }
 
   return (
     <div className="homepage bg-dark text-light min-vh-100">
@@ -148,12 +154,12 @@ const HomePage = () => {
             <div className="card bg-dark border-0">
               <div className="card-body">
                 <Routes>
-                  <Route path="/" element={<DashboardTab />} />
+                  <Route path="/" element={<DashboardTab stocks={stocks} />} />
                   <Route path="/stocks" element={<Stocks stocks={stocks}/>} />
-                  <Route path="/trade" element={<TradeTab />} />
-                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} />} />
-                  <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/>
-                  <Route path="/watchlist" element={<WatchlistTab />} />
+                  <Route path="/trade" element={<TradeTab stocks={stocks}/>} />
+                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack} stocks={stocks}/>} />
+                  {/* <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/> */}
+                  <Route path="/watchlist" element={<WatchlistTab stocks={stocks}/>} />
                   <Route path="/update-account" element={<UpdateAccount />} />
                   <Route path="/account-details" element={<AccountDetails />} />
                 </Routes>

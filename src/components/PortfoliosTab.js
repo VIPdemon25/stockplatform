@@ -1,65 +1,158 @@
-import React, { useState } from "react"
-import { Plus } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import axios from "axios";
 
-const PortfoliosTab = ({ onSelectPortfolio }) => {
-  const [portfolios, setPortfolios] = useState([
-    { id: 1, name: "Main Portfolio", value: 75000 },
-    { id: 2, name: "Tech Stocks", value: 25000 },
-  ])
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
-  const [newPortfolioName, setNewPortfolioName] = useState("")
-  const navigate = useNavigate()
+const PortfolioTab = ({ onBack, stocks }) => {
+  const [portfolio, setPortfolio] = useState(null);
+  const [holdings, setHoldings] = useState([]);
 
-  const handleCreatePortfolio = (e) => {
-    e.preventDefault()
-    if (newPortfolioName) {
-      setPortfolios([...portfolios, { id: portfolios.length + 1, name: newPortfolioName, value: 0 }])
-      setNewPortfolioName("")
-    }
-  }
+  // Fetch portfolio and holdings from API
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+            const accountId = sessionStorage.getItem("accountId");
 
-  const handlePortfolioSelect = (portfolio) => {
-    // Select portfolio and navigate to its details page
-    onSelectPortfolio(portfolio)
-    navigate(`/home/portfolios/${portfolio.id}`)
+            // Fetch holdings
+            const response = await axios.get(`http://localhost:7070/api/holdings/${accountId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const fetchedHoldings = response.data;
+
+            // Map holdings to stocks and calculate values
+            const updatedHoldings = fetchedHoldings.map((holding) => {
+                const stock = stocks.find((stock) => stock.stockId === holding.stockId);
+                const value = holding.numShares * (stock ? stock.open : 0);
+                return {
+                    ...holding,
+                    name: stock ? stock.symbol : "Unknown",
+                    value: value,
+                };
+            });
+
+            const totalValue = updatedHoldings.reduce((sum, holding) => sum + holding.value, 0);
+            const balance = {
+              newBalance: totalValue
+            }
+            console.log(balance);
+            
+            // Patch holdings (or whatever action you intend)
+            await axios.patch(`http://localhost:9091/api/portfolios/${accountId}/updatebalance`, balance);
+
+
+            // Calculate the percentage for each holding
+            const updatedHoldingsWithPercentage = updatedHoldings.map((holding) => ({
+                ...holding,
+                percentage: ((holding.value / totalValue) * 100).toFixed(2),
+            }));
+
+            setHoldings(updatedHoldingsWithPercentage);
+
+            // Set portfolio value
+            setPortfolio({ value: totalValue });
+        } catch (error) {
+            console.error("Error fetching or updating holdings:", error);
+        }
+    };
+
+    fetchData();
+}, [stocks]);
+
+if (!portfolio) {
+    return (
+        <div className="portfolio-tab">
+            <h2 className="text-primary">No Portfolio Data</h2>
+            <button className="btn btn-outline-primary" onClick={onBack}>
+                <ArrowLeft size={18} className="me-2" /> Back to Dashboard
+            </button>
+        </div>
+    );
+}
+
+
+  if (!portfolio) {
+    return (
+      <div className="portfolio-tab">
+        <h2 className="text-primary">No Portfolio Data</h2>
+        <button className="btn btn-outline-primary" onClick={onBack}>
+          <ArrowLeft size={18} className="me-2" /> Back to Dashboard
+        </button>
+      </div>
+    );
   }
 
   return (
-    <div className="portfolios animate__animated animate__fadeIn">
-      <h2 className="mb-4 text-primary">Portfolios</h2>
+    <div className="portfolio-tab animate__animated animate__fadeIn">
+      <button className="btn btn-outline-primary mb-4" onClick={onBack}>
+        <ArrowLeft size={18} className="me-2" /> Back to Dashboard
+      </button>
+      <h2 className="mb-4 text-primary">Portfolio</h2>
       <div className="row">
-        {portfolios.map((portfolio) => (
-          <div key={portfolio.id} className="col-md-4 mb-4">
-            <div className="card bg-gradient-info text-white">
-              <div className="card-body">
-                <h5 className="card-title">{portfolio.name}</h5>
-                <p className="card-text">Value: ${portfolio.value.toLocaleString()}</p>
-                <button className="btn btn-light btn-sm" onClick={() => handlePortfolioSelect(portfolio)}>
-                  View Details
-                </button>
-              </div>
+        <div className="col-md-6 mb-4">
+          <div className="card bg-dark">
+            <div className="card-body">
+              <h5 className="card-title text-primary">Portfolio Value</h5>
+              <p className="display-4 text-light">${portfolio.value.toLocaleString()}</p>
             </div>
           </div>
-        ))}
-      </div>
-      <form onSubmit={handleCreatePortfolio} className="mt-4">
-        <div className="input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="New Portfolio Name"
-            value={newPortfolioName}
-            onChange={(e) => setNewPortfolioName(e.target.value)}
-            required
-          />
-          <button type="submit" className="btn btn-primary">
-            <Plus size={18} className="me-2" /> Create Portfolio
-          </button>
         </div>
-      </form>
+        <div className="col-md-6 mb-4">
+          <div className="card bg-dark">
+            <div className="card-body">
+              <h5 className="card-title text-primary">Asset Allocation</h5>
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={holdings}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    label
+                  >
+                    {holdings.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="card bg-dark">
+        <div className="card-body">
+          <h5 className="card-title text-primary">Holdings</h5>
+          <div className="table-responsive">
+            <table className="table table-dark table-hover">
+              <thead>
+                <tr>
+                  <th>Symbol</th>
+                  <th>Value</th>
+                  <th>Percentage</th>
+                </tr>
+              </thead>
+              <tbody>
+                {holdings.map((holding) => (
+                  <tr key={holding.holdingId}>
+                    <td>{holding.name}</td>
+                    <td>${holding.value.toLocaleString()}</td>
+                    <td>{holding.percentage}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default PortfoliosTab
+export default PortfolioTab;
