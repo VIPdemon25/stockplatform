@@ -14,7 +14,7 @@ import Stocks from "./Stocks"
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
-  const [selectedPortfolio, setSelectedPortfolio] = useState(null)
+  // const [selectedPortfolio, setSelectedPortfolio] = useState(null)
   const [stocks, setStocks] = useState([]);
   const location = useLocation()
   const navigate = useNavigate()
@@ -157,7 +157,7 @@ const HomePage = () => {
                   <Route path="/" element={<DashboardTab stocks={stocks} />} />
                   <Route path="/stocks" element={<Stocks stocks={stocks}/>} />
                   <Route path="/trade" element={<TradeTab stocks={stocks}/>} />
-                  <Route path="/portfolios" element={<PortfoliosTab onSelectPortfolio={setSelectedPortfolio} onBack={onBack} stocks={stocks}/>} />
+                  <Route path="/portfolios" element={<PortfoliosTab  onBack={onBack} stocks={stocks}/>} />
                   {/* <Route path="/portfolios/:id" element={<PortfolioDetails portfolio={selectedPortfolio} onBack={handleBackToPortfolios} />}/> */}
                   <Route path="/watchlist" element={<WatchlistTab stocks={stocks}/>} />
                   <Route path="/update-account" element={<UpdateAccount />} />
