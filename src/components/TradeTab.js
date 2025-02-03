@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const TradeTab = ({ stocks }) => {
@@ -6,10 +6,22 @@ const TradeTab = ({ stocks }) => {
   const [symbol, setSymbol] = useState("");
   const [stockName, setStockName] = useState(""); // add stock name
   const [quantity, setQuantity] = useState("");
-  // const [price, setPrice] = useState("");
   const [useRiskManagement, setUseRiskManagement] = useState(false);
   const [riskPerTrade, setRiskPerTrade] = useState("");
   const [stopLoss, setStopLoss] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (successMessage || errorMessage) {
+      const timer = setTimeout(() => {
+        setSuccessMessage("");
+        setErrorMessage("");
+      }, 3000);
+
+      return () => clearTimeout(timer); // Clear timeout if component unmounts
+    }
+  }, [successMessage, errorMessage]);
 
   const handleTrade = async (e) => {
     e.preventDefault();
@@ -24,22 +36,19 @@ const TradeTab = ({ stocks }) => {
     const price_per_share = stock.open;
     const total_price = stock.open * quantity;
     const accountId = sessionStorage.getItem("accountId");
-    // const risk = (riskPerTrade/100)*total_price;
     const unit_risk=(riskPerTrade/100)*price_per_share;
-    // const u_stopLoss = stopLoss * quantity;
-    const basePayload = { stockId: id,transType: tradeType, symbol, stockName, numShares:quantity, accountId };
+    const basePayload = { stockId: id, transType: tradeType, symbol, stockName, numShares: quantity, accountId };
+    const r_basePayload = { stockId: id, transType: tradeType, symbol, stockName, numShares: 0, accountId };
     const payloads = {
       buyWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
-      buyWithRisk: { ...basePayload, typeOfPurchase: "positionSizing", typeOfSell: "marketplan", riskPerTrade:unit_risk, stopLoss, entryPrice: price_per_share },
+      buyWithRisk: { ...r_basePayload, typeOfPurchase: "positionSizing", typeOfSell: "marketplan", riskPerTrade: unit_risk, stopLoss, entryPrice: price_per_share },
       sellWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
-      sellWithRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "stoploss", riskPerTrade: 0, stopLoss, entryPrice: total_price }
+      sellWithRisk: { ...r_basePayload, typeOfPurchase: "marketplan", typeOfSell: "stoploss", riskPerTrade: 0, stopLoss, entryPrice: total_price }
     };
 
     // send data to backend with appropriate payload
     try {
       if (tradeType === "buy") {
-        console.log("Payload without risk management (buy):", payloads.buyWithoutRisk);
-        console.log("Payload with risk management (buy):", payloads.buyWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/buy/positionSizing', payloads.buyWithRisk,{
             headers: {
@@ -54,8 +63,6 @@ const TradeTab = ({ stocks }) => {
           });
         }
       } else if (tradeType === "sell") {
-        console.log("Payload without risk management (sell):", payloads.sellWithoutRisk);
-        console.log("Payload with risk management (sell):", payloads.sellWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/sell/stopLoss', payloads.sellWithRisk,{
             headers: {
@@ -70,14 +77,17 @@ const TradeTab = ({ stocks }) => {
           });
         }
       }
+      setSuccessMessage("Trade successfully placed!");
     } catch (error) {
-      console.error("Error sending trade data to backend:", error);
+      setErrorMessage("Failed to place order. Please try again.");
     }
   };
 
   return (
     <div className="trade animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Trade</h2>
+      {successMessage && <div className="alert alert-success" role="alert">{successMessage}</div>}
+      {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
       <form onSubmit={handleTrade}>
         <div className="mb-3">
           <div className="btn-group" role="group">
@@ -127,26 +137,18 @@ const TradeTab = ({ stocks }) => {
             required
           />
         </div>
-        <div className="mb-3">
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            required
-          />
-        </div>
-        {/* <div className="mb-3">
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-        </div> */}
+        {(!useRiskManagement) && (
+          <div className="mb-3">
+            <input
+              type="number"
+              className="form-control"
+              placeholder="Quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              required
+            />
+          </div>
+        )}
         <div className="mb-3 form-check">
           <input
             type="checkbox"
@@ -160,29 +162,29 @@ const TradeTab = ({ stocks }) => {
           </label>
         </div>
         {useRiskManagement && (
-  <>
-    <div className="mb-3">
-      <input
-        type="number"
-        className="form-control"
-        placeholder="Stop Loss"
-        value={stopLoss}
-        onChange={(e) => setStopLoss(e.target.value)}
-      />
-    </div>
-    {tradeType === "buy" && (
-      <div className="mb-3">
-        <input
-          type="number"
-          className="form-control"
-          placeholder="Risk Per Trade (%)"
-          value={riskPerTrade}
-          onChange={(e) => setRiskPerTrade(e.target.value)}
-        />
-      </div>
-    )}
-  </>
-)}
+          <>
+            <div className="mb-3">
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Stop Loss"
+                value={stopLoss}
+                onChange={(e) => setStopLoss(e.target.value)}
+              />
+            </div>
+            {tradeType === "buy" && (
+              <div className="mb-3">
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Risk Per Trade (%)"
+                  value={riskPerTrade}
+                  onChange={(e) => setRiskPerTrade(e.target.value)}
+                />
+              </div>
+            )}
+          </>
+        )}
 
         <button type="submit" className="btn btn-primary">
           Place Order

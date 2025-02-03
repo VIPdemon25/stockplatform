@@ -11,61 +11,78 @@ const PortfolioTab = ({ onBack, stocks }) => {
   const [holdings, setHoldings] = useState([]);
 
   useEffect(() => {
-    fetchHoldings();
-  }, [activePortfolioId, stocks]);
+    const fetchData = async () => {
+        try {
+            const token = sessionStorage.getItem("token");
+            const accountId = sessionStorage.getItem("accountId");
 
-  const fetchHoldings = async () => {
-    const token = sessionStorage.getItem("token");
-    const accountId = sessionStorage.getItem("accountId");
-    try {
-      const response = await axios.get(`http://localhost:7070/api/holdings/${accountId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const fetchedHoldings = response.data;
+            // Fetch holdings
+            const response = await axios.get(`http://localhost:7070/api/holdings/${accountId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const fetchedHoldings = response.data;
 
-      // Get holdings from all other portfolios
-      const otherHoldings = portfolios
-        .filter((p) => p.id !== activePortfolioId)
-        .flatMap((p) => p.holdings.map((h) => h.holdingId));
+            // Map holdings to stocks and calculate values
+            const updatedHoldings = fetchedHoldings.map((holding) => {
+                const stock = stocks.find((stock) => stock.stockId === holding.stockId);
+                const value = holding.numShares * (stock ? stock.open : 0);
+                return {
+                    ...holding,
+                    name: stock ? stock.symbol : "Unknown",
+                    value: value,
+                };
+            });
 
-      // Filter out holdings already in other portfolios
-      const newHoldings = fetchedHoldings.filter((h) => !otherHoldings.includes(h.holdingId));
+            const totalValue = updatedHoldings.reduce((sum, holding) => sum + holding.value, 0);
+            const balance = {
+              newBalance: totalValue
+            }
+            console.log(balance);
+            
+            // Patch holdings (or whatever action you intend)
+            await axios.patch(`http://localhost:9091/api/portfolios/${accountId}/updatebalance`, balance);
 
-      // Map holdings to stocks
-      const updatedHoldings = newHoldings.map((holding) => {
-        const stock = stocks.find((stock) => stock.stockId === holding.stockId);
-        return {
-          ...holding,
-          name: stock ? stock.symbol : "Unknown",
-          value: holding.boughtAt,
-        };
-      });
 
-      const totalValue = updatedHoldings.reduce((sum, h) => sum + h.value, 0);
-      const updatedHoldingsWithPercentage = updatedHoldings.map((h) => ({
-        ...h,
-        percentage: totalValue ? ((h.value / totalValue) * 100).toFixed(2) : 0,
-      }));
+            // Calculate the percentage for each holding
+            const updatedHoldingsWithPercentage = updatedHoldings.map((holding) => ({
+                ...holding,
+                percentage: ((holding.value / totalValue) * 100).toFixed(2),
+            }));
 
-      setHoldings(updatedHoldingsWithPercentage);
-      updatePortfolioHoldings(activePortfolioId, updatedHoldingsWithPercentage);
-    } catch (error) {
-      console.error("Error fetching holdings:", error);
-    }
-  };
+            setHoldings(updatedHoldingsWithPercentage);
 
-  const updatePortfolioHoldings = (portfolioId, newHoldings) => {
-    setPortfolios((prevPortfolios) =>
-      prevPortfolios.map((p) => (p.id === portfolioId ? { ...p, holdings: newHoldings } : p))
+            // Set portfolio value
+            setPortfolio({ value: totalValue });
+        } catch (error) {
+            console.error("Error fetching or updating holdings:", error);
+        }
+    };
+
+    fetchData();
+}, [stocks]);
+
+if (!portfolio) {
+    return (
+        <div className="portfolio-tab">
+            <h2 className="text-primary">No Portfolio Data</h2>
+            <button className="btn btn-outline-primary" onClick={onBack}>
+                <ArrowLeft size={18} className="me-2" /> Back to Dashboard
+            </button>
+        </div>
     );
-  };
+}
 
-  const addPortfolio = () => {
-    const newPortfolio = { id: portfolios.length + 1, name: `Portfolio ${portfolios.length + 1}`, holdings: [] };
-    setPortfolios([...portfolios, newPortfolio]);
-    setActivePortfolioId(newPortfolio.id);
-    setHoldings([]); // New portfolio starts empty
-  };
+
+  if (!portfolio) {
+    return (
+      <div className="portfolio-tab">
+        <h2 className="text-primary">No Portfolio Data</h2>
+        <button className="btn btn-outline-primary" onClick={onBack}>
+          <ArrowLeft size={18} className="me-2" /> Back to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="portfolio-tab animate__animated animate__fadeIn">
