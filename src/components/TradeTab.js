@@ -10,16 +10,18 @@ const TradeTab = ({ stocks }) => {
   const [riskPerTrade, setRiskPerTrade] = useState("");
   const [stopLoss, setStopLoss] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (successMessage) {
+    if (successMessage || errorMessage) {
       const timer = setTimeout(() => {
         setSuccessMessage("");
+        setErrorMessage("");
       }, 3000);
 
       return () => clearTimeout(timer); // Clear timeout if component unmounts
     }
-  }, [successMessage]);
+  }, [successMessage, errorMessage]);
 
   const handleTrade = async (e) => {
     e.preventDefault();
@@ -47,8 +49,6 @@ const TradeTab = ({ stocks }) => {
     // send data to backend with appropriate payload
     try {
       if (tradeType === "buy") {
-        console.log("Payload without risk management (buy):", payloads.buyWithoutRisk);
-        console.log("Payload with risk management (buy):", payloads.buyWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/buy/positionSizing', payloads.buyWithRisk,{
             headers: {
@@ -63,8 +63,6 @@ const TradeTab = ({ stocks }) => {
           });
         }
       } else if (tradeType === "sell") {
-        console.log("Payload without risk management (sell):", payloads.sellWithoutRisk);
-        console.log("Payload with risk management (sell):", payloads.sellWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/sell/stopLoss', payloads.sellWithRisk,{
             headers: {
@@ -81,14 +79,15 @@ const TradeTab = ({ stocks }) => {
       }
       setSuccessMessage("Trade successfully placed!");
     } catch (error) {
-      console.error("Error sending trade data to backend:", error);
+      setErrorMessage("Failed to place order. Please try again.");
     }
   };
 
   return (
     <div className="trade animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Trade</h2>
-      {successMessage && <div className="alert alert-success animate__animated animate__fadeIn" role="alert">{successMessage}</div>}
+      {successMessage && <div className="alert alert-success" role="alert">{successMessage}</div>}
+      {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
       <form onSubmit={handleTrade}>
         <div className="mb-3">
           <div className="btn-group" role="group">
