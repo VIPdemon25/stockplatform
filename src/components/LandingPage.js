@@ -10,72 +10,101 @@ const LandingPage = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const candlesticks = [];
-    const candlestickCount = 30; // Increased number of candlesticks for better visuals
+    // Modern color palette
+    const colors = {
+      primary: "#6366f1",    // Indigo
+      secondary: "#ec4899",  // Pink
+      background: "#0f172a"  // Navy
+    };
 
-    for (let i = 0; i < candlestickCount; i++) {
-      candlesticks.push({
-        x: (i / candlestickCount) * canvas.width,
-        open: Math.random() * canvas.height,
-        close: Math.random() * canvas.height,
-        high: Math.max(candlesticks[i]?.open || 0, candlesticks[i]?.close || 0) + Math.random() * 50, // Increased randomness
-        low:
-          Math.min(candlesticks[i]?.open || canvas.height, candlesticks[i]?.close || canvas.height) -
-          Math.random() * 20, // Increased randomness
-        direction: Math.random() > 0.5 ? 1 : -1,
-        speed: Math.random() * 2 + 1, // Add speed for smoother animation
-      });
+    // Particle system
+    class Particle {
+      constructor() {
+        this.reset();
+        this.velocity = {
+          x: (Math.random() - 0.5) * 0.5,
+          y: (Math.random() - 0.5) * 0.5
+        };
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.baseSize = this.size;
+        this.color = Math.random() > 0.5 ? colors.primary : colors.secondary;
+      }
+
+      update() {
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+
+        // Keep particles within bounds
+        if (this.x < 0 || this.x > canvas.width) this.velocity.x *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.velocity.y *= -1;
+
+        // Size animation
+        this.size = this.baseSize * (0.8 + Math.sin(Date.now() * 0.005) * 0.2);
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
     }
 
-    const animate = () => {
-      requestAnimationFrame(animate);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Create particles
+    const particles = Array.from({ length: 100 }, () => new Particle());
+    
+    // Mouse interaction
+    const mouse = { x: null, y: null, radius: 100 };
+    const handleMouseMove = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    canvas.addEventListener("mousemove", handleMouseMove);
 
-      // Add gradient overlay
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, "rgba(64, 64, 64, 0.4)"); // Subtle gray gradient
-      gradient.addColorStop(1, "rgba(32, 32, 32, 0.2)");
-      ctx.fillStyle = gradient;
+    const animate = () => {
+      ctx.fillStyle = colors.background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      candlesticks.forEach((candlestick, index) => {
-        const width = canvas.width / candlestickCount;
+      particles.forEach(particle => {
+        particle.update();
 
-        ctx.strokeStyle = "rgba(169, 169, 169, 0.8)"; // Subtle gray wick color
-        ctx.lineWidth = 2; // Thicker wick
-
-        // Draw the wick
-        ctx.beginPath();
-        ctx.moveTo(candlestick.x + width / 2, candlestick.low);
-        ctx.lineTo(candlestick.x + width / 2, candlestick.high);
-        ctx.stroke();
-
-        // Draw the body
-        ctx.fillStyle =
-          candlestick.open > candlestick.close ? "rgba(255, 99, 132, 0.8)" : "rgba(75, 192, 192, 0.8)"; // Keep candlestick colors
-        ctx.fillRect(
-          candlestick.x,
-          Math.min(candlestick.open, candlestick.close),
-          width,
-          Math.abs(candlestick.open - candlestick.close),
-        );
-
-        // Animate the candlesticks
-        candlestick.open += candlestick.direction * candlestick.speed;
-        candlestick.close += candlestick.direction * candlestick.speed;
-
-        // Reverse direction if the candlestick reaches the top or bottom
-        if (candlestick.open > canvas.height * 0.9 || candlestick.open < canvas.height * 0.1) {
-          candlestick.direction *= -1;
+        // Mouse interaction
+        const dx = mouse.x - particle.x;
+        const dy = mouse.y - particle.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius) {
+          const force = (mouse.radius - distance) / mouse.radius;
+          particle.x -= dx * force * 0.1;
+          particle.y -= dy * force * 0.1;
         }
 
-        candlestick.high = Math.max(candlestick.open, candlestick.close) + Math.random() * 30; // Increased randomness
-        candlestick.low = Math.min(candlestick.open, candlestick.close) - Math.random() * 30; // Increased randomness
+        particle.draw();
 
-        // Ensure high and low stay within canvas bounds
-        candlestick.high = Math.min(candlestick.high, canvas.height);
-        candlestick.low = Math.max(candlestick.low, 0);
+        // Draw connections between nearby particles
+        particles.forEach(other => {
+          const dx = other.x - particle.x;
+          const dy = other.y - particle.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.strokeStyle = particle.color;
+            ctx.lineWidth = 0.2;
+            ctx.globalAlpha = 1 - distance/100;
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.stroke();
+          }
+        });
       });
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(animate);
     };
 
     animate();
@@ -83,31 +112,43 @@ const LandingPage = () => {
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      particles.forEach(particle => particle.reset());
     };
 
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
   return (
-    <div className="landing-page vh-100 d-flex justify-content-center align-items-center">
-      <canvas ref={canvasRef} className="background-animation"></canvas>
-      <div className="content text-center">
-        <h1 className="display-1 mb-4 text-primary font-weight-bold animate__animated animate__fadeIn">Elevate</h1>
-        <p className="lead text-light mb-4 animate__animated animate__fadeIn animate__delay-1s">
-          Your gateway to smarter investing
-        </p>
-      </div>
-      <div className="position-absolute top-0 end-0 m-4">
-        <Link to="/login" className="btn btn-outline-primary me-3 animate__animated animate__fadeIn">
-          Login
-        </Link>
-        <Link to="/signup" className="btn btn-primary animate__animated animate__fadeIn">
-          Sign Up
-        </Link>
+    <div className="landing-page vh-100 position-relative overflow-hidden">
+      <canvas ref={canvasRef} className="background-animation" />
+      
+      <div className="position-absolute top-50 start-50 translate-middle text-center">
+        <div className="glassmorphism p-5 rounded-4 shadow">
+          <h1 className="display-1 mb-4 text-white fw-bold">
+            Next<span className="text-primary">Wealth</span>
+          </h1>
+          <p className="lead text-light mb-4 opacity-75">
+            Intelligent Investing for the Modern Era
+          </p>
+          <div className="d-flex gap-3 justify-content-center">
+            <Link 
+              to="/signup" 
+              className="btn btn-lg btn-primary px-5 py-3 rounded-pill fw-bold hover-glow"
+            >
+              Get Started
+            </Link>
+            <Link 
+              to="/login" 
+              className="btn btn-lg btn-outline-light px-5 py-3 rounded-pill fw-bold"
+            >
+              Existing Account
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
