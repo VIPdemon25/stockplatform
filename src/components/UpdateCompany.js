@@ -69,8 +69,8 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
             </label>
             <input
               type="number"
-              id="currentPrice"
-              name="currentPrice"
+              id="open"
+              name="open"
               value={updatedStock.open}
               onChange={handleInputChange}
               className="w-full px-4 py-2 bg-dark border border-primary rounded-md text-light focus:outline-none focus:border-blue-500 transition-colors"
@@ -83,8 +83,8 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
             </label>
             <input
               type="number"
-              id="currentPrice"
-              name="currentPrice"
+              id="last"
+              name="last"
               value={updatedStock.last}
               onChange={handleInputChange}
               className="w-full px-4 py-2 bg-dark border border-primary rounded-md text-light focus:outline-none focus:border-blue-500 transition-colors"
