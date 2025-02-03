@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import axios from "axios";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 const PortfolioTab = ({ onBack, stocks }) => {
-  const [portfolio, setPortfolio] = useState(null);
+  const [portfolios, setPortfolios] = useState([{ id: 1, name: "Portfolio 1", holdings: [] }]);
+  const [activePortfolioId, setActivePortfolioId] = useState(1);
   const [holdings, setHoldings] = useState([]);
 
-  // Fetch portfolio and holdings from API
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -90,12 +90,29 @@ if (!portfolio) {
         <ArrowLeft size={18} className="me-2" /> Back to Dashboard
       </button>
       <h2 className="mb-4 text-primary">Portfolio</h2>
+      <div className="mb-3">
+        {portfolios.map((portfolio) => (
+          <button
+            key={portfolio.id}
+            className={`btn me-2 ${portfolio.id === activePortfolioId ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => {
+              setActivePortfolioId(portfolio.id);
+              setHoldings(portfolio.holdings);
+            }}
+          >
+            {portfolio.name}
+          </button>
+        ))}
+        <button className="btn btn-success" onClick={addPortfolio}>
+          <Plus size={18} className="me-2" /> Add Portfolio
+        </button>
+      </div>
       <div className="row">
         <div className="col-md-6 mb-4">
           <div className="card bg-dark">
             <div className="card-body">
               <h5 className="card-title text-primary">Portfolio Value</h5>
-              <p className="display-4 text-light">${portfolio.value.toLocaleString()}</p>
+              <p className="display-4 text-light">${holdings.reduce((sum, h) => sum + h.value, 0).toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -105,16 +122,7 @@ if (!portfolio) {
               <h5 className="card-title text-primary">Asset Allocation</h5>
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
-                  <Pie
-                    data={holdings}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    label
-                  >
+                  <Pie data={holdings} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                     {holdings.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}

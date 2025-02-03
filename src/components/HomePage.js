@@ -20,34 +20,34 @@ const HomePage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // const dummyStocks = [
-    //   { stockId: 1, name: "Apple Inc.", symbol: "AAPL", type: "technology", open: 150.25, last: 151.5 },
-    //   { stockId: 2, name: "Microsoft Corporation", symbol: "MSFT", type: "technology", open: 280.75, last: 282.0 },
-    //   { stockId: 3, name: "Amazon.com, Inc.", symbol: "AMZN", type: "technology", open: 3380.0, last: 3395.5 },
-    //   { stockId: 4, name: "Alphabet Inc.", symbol: "GOOGL", type: "technology", open: 2410.0, last: 2415.75 },
-    //   { stockId: 5, name: "Tesla, Inc.", symbol: "TSLA", type: "technology", open: 690.5, last: 678.25 },
-    //   { stockId: 6, name: "JPMorgan Chase & Co.", symbol: "JPM", type: "finance", open: 155.0, last: 156.75 },
-    //   { stockId: 7, name: "Bank of America Corp", symbol: "BAC", type: "finance", open: 41.5, last: 41.75 },
-    //   { stockId: 8, name: "Wells Fargo & Co", symbol: "WFC", type: "finance", open: 46.75, last: 46.25 },
-    //   { stockId: 9, name: "Caterpillar Inc.", symbol: "CAT", type: "construction", open: 235.25, last: 239.0 },
-    //   { stockId: 10, name: "Deere & Company", symbol: "DE", type: "construction", open: 355.0, last: 352.75 },
-    // ]
-    // setStocks(dummyStocks)
+    const dummyStocks = [
+      { stockId: 1, name: "Apple Inc.", symbol: "AAPL", type: "technology", open: 150.25, last: 151.5 },
+      { stockId: 2, name: "Microsoft Corporation", symbol: "MSFT", type: "technology", open: 280.75, last: 282.0 },
+      { stockId: 3, name: "Amazon.com, Inc.", symbol: "AMZN", type: "technology", open: 3380.0, last: 3395.5 },
+      { stockId: 4, name: "Alphabet Inc.", symbol: "GOOGL", type: "technology", open: 2410.0, last: 2415.75 },
+      { stockId: 5, name: "Tesla, Inc.", symbol: "TSLA", type: "technology", open: 690.5, last: 678.25 },
+      { stockId: 6, name: "JPMorgan Chase & Co.", symbol: "JPM", type: "finance", open: 155.0, last: 156.75 },
+      { stockId: 7, name: "Bank of America Corp", symbol: "BAC", type: "finance", open: 41.5, last: 41.75 },
+      { stockId: 8, name: "Wells Fargo & Co", symbol: "WFC", type: "finance", open: 46.75, last: 46.25 },
+      { stockId: 9, name: "Caterpillar Inc.", symbol: "CAT", type: "construction", open: 235.25, last: 239.0 },
+      { stockId: 10, name: "Deere & Company", symbol: "DE", type: "construction", open: 355.0, last: 352.75 },
+    ]
+    setStocks(dummyStocks)
 
     // Uncomment to fetch data from an API
-    const token = sessionStorage.getItem("token");
-    axios
-      .get("http://localhost:9091/api/stocks",{
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the JWT token
-        },
-      })
-      .then((response) => {
-        setStocks(response.data)
-      })
-      .catch((error) => {
-        console.error("Error fetching stock data:", error)
-      })
+    // const token = sessionStorage.getItem("token");
+    // axios
+    //   .get("http://localhost:9091/api/stocks",{
+    //     headers: {
+    //       Authorization: `Bearer ${token}`, // Include the JWT token
+    //     },
+    //   })
+    //   .then((response) => {
+    //     setStocks(response.data)
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching stock data:", error)
+    //   })
     // Sync the active tab with the current URL
     const path = location.pathname
     if (path.includes("/stocks")) {
