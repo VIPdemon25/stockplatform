@@ -7,6 +7,7 @@ import HomePage from "./components/HomePage";
 import EmployeeHomePage from "./components/EmployeeHomePage";
 import SignupEmployee from "./components/SignupEmployee";
 import AllTrades from "./components/AllTrades";
+import AboutUs from "./components/AboutUs";
 import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap CSS
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Bootstrap JavaScript
 import "./App.css";
@@ -23,6 +24,7 @@ function App() {
           <Route path="/employee-home" element={<EmployeeHomePage />} />
           <Route path="/signup-employee" element={<SignupEmployee/>}/>
           <Route path="/all-trades" element={<AllTrades />} />
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
       </div>
     </Router>
