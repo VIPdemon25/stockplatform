@@ -90,7 +90,7 @@ const SignUp = () => {
       <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}> 
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}> 
           <div className="card-body">
-            <h2 className="card-title text-center mb-4 text-primary">Sign Up for Elevate</h2> 
+            <h2 className="card-title text-center mb-4 text-primary">Sign Up for Speculator</h2> 
  
             {/* Success Message */}
             {success && ( 

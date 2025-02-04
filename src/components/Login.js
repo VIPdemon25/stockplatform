@@ -68,7 +68,7 @@ const Login = () => {
       <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}>
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "20rem" }}>
           <div className="card-body">  
-            <h2 className="card-title text-center mb-4 text-primary">Login to Elevate</h2>
+            <h2 className="card-title text-center mb-4 text-primary">Login to Speculator</h2>
             <form onSubmit={formik.handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">

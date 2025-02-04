@@ -45,7 +45,7 @@ const Navbar = ({ handleLogout, stocks }) => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
         <Link to="/home" className="navbar-brand">
-          Elevate
+          Speculator
         </Link>
         <div className="d-flex align-items-center position-relative" style={{ zIndex: 1050 }}>
           <form onSubmit={handleSearch} className="d-flex me-2">

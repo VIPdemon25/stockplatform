@@ -25,7 +25,7 @@ const AboutUs = () => {
             Home
           </button>
 
-          <h1 className="display-4 fw-bold text-center mb-4">About Elevate</h1>
+          <h1 className="display-4 fw-bold text-center mb-4">About Speculator</h1>
           <p className="lead text-center mb-0">
             Empowering individuals with cutting-edge tools and insights for smarter financial decisions.
           </p>
@@ -71,13 +71,13 @@ const AboutUs = () => {
           <div className="col-lg-8 mx-auto">
             <h2 className="text-primary mb-4 text-center">Our Mission</h2>
             <p className="mb-4">
-              At Elevate, we're on a mission to democratize finance and empower individuals with the tools and knowledge
+              At Speculator, we're on a mission to democratize finance and empower individuals with the tools and knowledge
               needed to navigate the complex world of investment. Founded by a team of finance experts and tech
               enthusiasts, we combine cutting-edge technology with deep market insights to provide you with a seamless
               trading experience.
             </p>
             <p className="mb-5">
-              Whether you're a seasoned investor or just starting out, Elevate is designed to help you make informed
+              Whether you're a seasoned investor or just starting out, Speculator is designed to help you make informed
               decisions, manage risk effectively, and maximize your potential returns. Join us in shaping the future of
               personal finance and investment.
             </p>
