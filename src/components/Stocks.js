@@ -10,7 +10,7 @@ const Stocks = ({stocks}) => {
   // Dummy data for testing (update with the new fields)
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search)
+    const params = new URLSearchParams(location.search) 
     const stockId = params.get("id")
     if (stockId) {
       const stock = stocks.find((s) => s.stockId === Number.parseInt(stockId))

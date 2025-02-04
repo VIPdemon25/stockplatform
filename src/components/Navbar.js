@@ -11,8 +11,8 @@ const Navbar = ({ handleLogout, stocks }) => {
   const navigate = useNavigate()
 
   const handleSearch = (e) => {
-    e.preventDefault() // so tht the page does not reload
-    setShowSearchResults(true)
+    e.preventDefault() // so tht the page does not reload  
+    setShowSearchResults(true) 
     // console.log(stocks);
 
   }

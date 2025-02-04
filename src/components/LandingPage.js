@@ -23,7 +23,7 @@ const LandingPage = () => {
           Math.min(candlesticks[i]?.open || canvas.height, candlesticks[i]?.close || canvas.height) -
           Math.random() * 20, // Increased randomness
         direction: Math.random() > 0.5 ? 1 : -1,
-        speed: Math.random() * 2 + 1, // Add speed for smoother animation
+        speed: Math.random() * 2+1, // Add speed for smoother animation
       });
     }
 
@@ -33,7 +33,7 @@ const LandingPage = () => {
 
       // Add gradient overlay
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, "rgba(64, 64, 64, 0.4)"); // Subtle gray gradient
+      gradient.addColorStop(0, "rgba(0, 0, 255, 0.5) "); // Subtle gray gradient
       gradient.addColorStop(1, "rgba(32, 32, 32, 0.2)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -42,7 +42,7 @@ const LandingPage = () => {
         const width = canvas.width / candlestickCount;
 
         ctx.strokeStyle = "rgba(169, 169, 169, 0.8)"; // Subtle gray wick color
-        ctx.lineWidth = 2; // Thicker wick
+        ctx.lineWidth = 3; // Thicker wick
 
         // Draw the wick
         ctx.beginPath();
@@ -52,7 +52,7 @@ const LandingPage = () => {
 
         // Draw the body
         ctx.fillStyle =
-          candlestick.open > candlestick.close ? "rgba(255, 99, 132, 0.8)" : "rgba(75, 192, 192, 0.8)"; // Keep candlestick colors
+          candlestick.open > candlestick.close ? "rgb(194,45,45,0.8)" : "rgb(10,121,77,0.8)"; // Keep candlestick colors
         ctx.fillRect(
           candlestick.x,
           Math.min(candlestick.open, candlestick.close),
@@ -69,7 +69,7 @@ const LandingPage = () => {
           candlestick.direction *= -1;
         }
 
-        candlestick.high = Math.max(candlestick.open, candlestick.close) + Math.random() * 30; // Increased randomness
+        candlestick.high = Math.max(candlestick.open, candlestick.close) + Math.random() * 20; // Increased randomness
         candlestick.low = Math.min(candlestick.open, candlestick.close) - Math.random() * 30; // Increased randomness
 
         // Ensure high and low stay within canvas bounds
