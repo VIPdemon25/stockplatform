@@ -14,7 +14,7 @@ const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, classN
       return matchesSearch && matchesFilter
     })
     setFilteredStocks(filtered)
-  }, [searchQuery, filterType])
+  }, [searchQuery, filterType, stocks])
 
   return (
     <div

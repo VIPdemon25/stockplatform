@@ -785,3 +785,29 @@ body {
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
   transform: translateY(-2px);
 }
+
+/*Modal styles*/
+.modal-content.custom-modal {
+  background-color: #000000; /* Black background color */
+  color: #ffffff; /* White text */
+}
+
+.modal-header.custom-header {
+  background-color: #007bff; /* Blue background color */
+  border-bottom: 1px solid #0056b3; /* Border color to match the blue theme */
+  color: #ffffff; /* White text */
+}
+
+.modal-footer.custom-footer {
+  background-color: #000000; /* Black background color */
+  border-top: 1px solid #007bff; /* Border color to match the blue theme */
+  color: #ffffff; /* White text */
+}
+
+.custom-close {
+  color: #ffffff; /* White close button */
+}
+
+.btn-close:focus {
+  box-shadow: none; /* Remove focus outline from close button */
+}

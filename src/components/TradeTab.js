@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
+import {ToastContainer ,toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const TradeTab = ({ stocks }) => {
@@ -9,19 +11,8 @@ const TradeTab = ({ stocks }) => {
   const [useRiskManagement, setUseRiskManagement] = useState(false);
   const [riskPerTrade, setRiskPerTrade] = useState("");
   const [stopLoss, setStopLoss] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    if (successMessage || errorMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage("");
-        setErrorMessage("");
-      }, 3000);
 
-      return () => clearTimeout(timer); // Clear timeout if component unmounts
-    }
-  }, [successMessage, errorMessage]);
 
   const handleTrade = async (e) => {
     e.preventDefault();
@@ -77,17 +68,15 @@ const TradeTab = ({ stocks }) => {
           });
         }
       }
-      setSuccessMessage("Trade successfully placed!");
+      toast.success("Trade successfully placed!");
     } catch (error) {
-      setErrorMessage("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please try again.");
     }
   };
 
   return (
     <div className="trade animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Trade</h2>
-      {successMessage && <div className="alert alert-success" role="alert">{successMessage}</div>}
-      {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
       <form onSubmit={handleTrade}>
         <div className="mb-3">
           <div className="btn-group" role="group">
@@ -190,6 +179,7 @@ const TradeTab = ({ stocks }) => {
           Place Order
         </button>
       </form>
+      <ToastContainer/>
     </div>
   );
 };

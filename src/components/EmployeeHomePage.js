@@ -8,9 +8,12 @@ import {
   LogOut,
   Search,
 } from "lucide-react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import CreateCompany from "./CreateCompany";
 import UpdateCompany from "./UpdateCompany";
+
 
 const EmployeeHomePage = () => {
   const [accounts, setAccounts] = useState([]);
@@ -78,7 +81,8 @@ const EmployeeHomePage = () => {
       });
       setStocks(response.data);
     } catch (error) {
-      console.error("Error fetching stocks:", error);
+      // console.error("Error fetching stocks:", error);
+      
     }
   };
 
@@ -102,7 +106,13 @@ const EmployeeHomePage = () => {
       
       fetchStocks();
     } catch (error) {
-      alert("This stock has trades registered to it, so it can't be deleted.");
+      // alert("This stock has trades registered to it, so it can't be deleted.");
+      toast.error("This stock has trades registered to it, so it can't be deleted.", {
+        style: {
+          backgroundColor: 'rgb(114, 47, 55)',
+          color: 'white'
+        }
+      });
       return;
     }
   };
@@ -338,6 +348,7 @@ return (
         isUpdating={isUpdating}
       />
     )}
+    <ToastContainer />
   </div>
 );
 };

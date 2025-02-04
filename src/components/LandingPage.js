@@ -129,7 +129,7 @@ const LandingPage = () => {
       <div className="position-absolute top-50 start-50 translate-middle text-center">
         <div className="glassmorphism p-5 rounded-4 shadow">
           <h1 className="display-1 mb-4 text-white fw-bold">
-            Next<span className="text-primary">Wealth</span>
+            Spec<span className="text-primary">ulator</span>
           </h1>
           <p className="lead text-light mb-4 opacity-75">
             Intelligent Investing for the Modern Era
