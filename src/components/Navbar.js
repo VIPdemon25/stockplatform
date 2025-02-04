@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Search, Settings, User, LogOut, Trash2 } from "lucide-react"
+import { Search, Settings, User, LogOut, Trash2, Info } from "lucide-react"
 import axios from "axios"
 import SearchResults from "./SearchResults"
 
@@ -109,6 +109,15 @@ const Navbar = ({ handleLogout, stocks }) => {
                 <Link to="/home/update-account" className="dropdown-item">
                   <Settings size={18} className="me-2" />
                   Update Account
+                </Link>
+              </li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <Link to="/about" className="dropdown-item">
+                  <Info size={18} className="me-2" />
+                  About Us
                 </Link>
               </li>
               <li>
