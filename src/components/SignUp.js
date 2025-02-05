@@ -4,11 +4,13 @@ import { CSSTransition } from "react-transition-group";
 import { useFormik } from "formik";
 import * as Yup from "yup"; 
 import axios from "axios"; 
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importing the eye icons
 
 const SignUp = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
   const [success, setSuccess] = useState(false); // Success state
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const nodeRef = useRef(null);// Ref for CSSTransition
   const navigate = useNavigate(); // Hook for navigation   
 
@@ -74,6 +76,11 @@ const SignUp = () => {
       }
     },
   });
+
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
@@ -176,16 +183,25 @@ const SignUp = () => {
                 <label htmlFor="password" className="form-label">
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
-                  name="password"
-                  placeholder="Create a password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
+                    name="password"
+                    placeholder="Create a password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary password-toggle"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaEyeSlash className="icon-white" /> : <FaEye className="icon-white" />}
+                  </button>
+                </div>
                 {formik.touched.password && formik.errors.password ? (
                   <div className="text-danger">{formik.errors.password}</div>
                 ) : null}
@@ -211,6 +227,6 @@ const SignUp = () => {
       </CSSTransition>
     </div>
   );
-};
+};  
 
 export default SignUp;

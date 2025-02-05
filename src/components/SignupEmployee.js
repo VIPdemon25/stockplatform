@@ -4,11 +4,13 @@ import { CSSTransition } from "react-transition-group";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importing the eye icons
 
 const SignupEmployee = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
   const [success, setSuccess] = useState(false); // Success state
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const nodeRef = useRef(null);
   const navigate = useNavigate(); // Hook for navigation
 
@@ -74,6 +76,9 @@ const SignupEmployee = () => {
       }
     },
   });
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
@@ -81,19 +86,20 @@ const SignupEmployee = () => {
       background: "linear-gradient(135deg, #000000, #1D2671)",
     }}>
       <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
-        <i className="fas fa-home me-2"></i>Home
+        <i className="fas fa-home me-2"></i>Home  
       </Link>
-      <Link to="/signup" className="position-absolute top-0 end-0 m-4 text-light home-link">
+      {/* Add "Signup as Admin" link at the top right */}
+      <Link to="/signup-employee" className="position-absolute top-0 end-0 m-4 text-light  home-link"> 
         Signup as Trader
       </Link>
-      <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}>
-        <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}>
+      <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}> 
+        <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}> 
           <div className="card-body">
-            <h2 className="card-title text-center mb-4 text-primary">Sign Up as Employee</h2>
-
+            <h2 className="card-title text-center mb-4 text-primary">Sign Up as Employee</h2> 
+ 
             {/* Success Message */}
-            {success && (
-              <div className="alert alert-success text-center" role="alert">
+            {success && ( 
+              <div className="alert alert-success text-center" role="alert"> 
                 Account created successfully! Redirecting to login...
               </div>
             )}
@@ -175,16 +181,25 @@ const SignupEmployee = () => {
                 <label htmlFor="password" className="form-label">
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
-                  name="password"
-                  placeholder="Create a password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
+                    name="password"
+                    placeholder="Create a password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary password-toggle"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaEyeSlash className="icon-white" /> : <FaEye className="icon-white" />}
+                  </button>
+                </div>
                 {formik.touched.password && formik.errors.password ? (
                   <div className="text-danger">{formik.errors.password}</div>
                 ) : null}
@@ -195,7 +210,7 @@ const SignupEmployee = () => {
                   className="btn btn-primary animate__animated animate__fadeInUp animate__faster"
                   disabled={loading} // Disable button while loading
                 >
-                  {loading ? "Signing Up..." : "Sign Up"}
+                  {loading ? "Signing Up..." : "Sign Up"}  
                 </button>
               </div>
             </form>
@@ -210,6 +225,7 @@ const SignupEmployee = () => {
       </CSSTransition>
     </div>
   );
-};
+};  
+
 
 export default SignupEmployee;
