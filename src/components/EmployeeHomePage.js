@@ -92,17 +92,28 @@ const EmployeeHomePage = () => {
   // };
 
   const deleteStock = async (stockId) => {
-    const token = sessionStorage.getItem("token")
+    const token = sessionStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:9091/api/stocks/${stockId}/delete`,{
+      await axios.delete(`http://localhost:9091/api/stocks/${stockId}/delete`, {
         headers: {
           Authorization: `Bearer ${token}`, // Include the JWT token
         },
       });
-      
+  
       fetchStocks();
     } catch (error) {
-      alert("This stock has trades registered to it, so it can't be deleted.");
+      const alertDiv = document.createElement("div");
+      alertDiv.className = "alert alert-danger";
+      alertDiv.role = "alert";
+      alertDiv.innerText = "This stock has trades registered to it, so it can't be deleted.";
+      
+      const body = document.body;
+      body.insertBefore(alertDiv, body.firstChild);
+      
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 3000);
+      
       return;
     }
   };
