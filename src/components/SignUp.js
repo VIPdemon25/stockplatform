@@ -90,10 +90,6 @@ const SignUp = () => {
       <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
         <i className="fas fa-home me-2"></i>Home  
       </Link>
-      {/* Add "Signup as Admin" link at the top right */}
-      <Link to="/signup-employee" className="position-absolute top-0 end-0 m-4 text-light  home-link"> 
-        Signup as Admin
-      </Link>
       <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}> 
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}> 
           <div className="card-body">

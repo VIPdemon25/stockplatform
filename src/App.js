@@ -5,13 +5,12 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import HomePage from "./components/HomePage";
 import EmployeeHomePage from "./components/EmployeeHomePage";
-import SignupEmployee from "./components/SignupEmployee";
 import AllTrades from "./components/AllTrades";
 import AboutUs from "./components/AboutUs.js";
 import "bootstrap/dist/css/bootstrap.min.css"; // Bootstrap CSS
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // Bootstrap JavaScript
 import "./App.css";
-// import "animate.css";
+
 function App() {
   return (
     <Router>
@@ -22,7 +21,6 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/home/*" element={<HomePage />} />
           <Route path="/employee-home" element={<EmployeeHomePage />} />
-          <Route path="/signup-employee" element={<SignupEmployee/>}/>
           <Route path="/all-trades" element={<AllTrades />} />
           <Route path="/about" element={<AboutUs />} />
         </Routes>
