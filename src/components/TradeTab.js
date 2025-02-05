@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
+import {ToastContainer ,toast} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const TradeTab = ({ stocks }) => {
@@ -9,17 +11,8 @@ const TradeTab = ({ stocks }) => {
   const [useRiskManagement, setUseRiskManagement] = useState(false);
   const [riskPerTrade, setRiskPerTrade] = useState("");
   const [stopLoss, setStopLoss] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    if (successMessage) {
-      const timer = setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
 
-      return () => clearTimeout(timer); // Clear timeout if component unmounts
-    }
-  }, [successMessage]);
 
   const handleTrade = async (e) => {
     e.preventDefault();
@@ -47,8 +40,6 @@ const TradeTab = ({ stocks }) => {
     // send data to backend with appropriate payload
     try {
       if (tradeType === "buy") {
-        console.log("Payload without risk management (buy):", payloads.buyWithoutRisk);
-        console.log("Payload with risk management (buy):", payloads.buyWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/buy/positionSizing', payloads.buyWithRisk,{
             headers: {
@@ -63,8 +54,6 @@ const TradeTab = ({ stocks }) => {
           });
         }
       } else if (tradeType === "sell") {
-        console.log("Payload without risk management (sell):", payloads.sellWithoutRisk);
-        console.log("Payload with risk management (sell):", payloads.sellWithRisk);
         if (useRiskManagement) {
           await axios.post('http://localhost:9090/api/orders/sell/stopLoss', payloads.sellWithRisk,{
             headers: {
@@ -79,16 +68,15 @@ const TradeTab = ({ stocks }) => {
           });
         }
       }
-      setSuccessMessage("Trade successfully placed!");
+      toast.success("Trade successfully placed!");
     } catch (error) {
-      console.error("Error sending trade data to backend:", error);
+      toast.error("Failed to place order. Please try again.");
     }
   };
 
   return (
     <div className="trade animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Trade</h2>
-      {successMessage && <div className="alert alert-success animate__animated animate__fadeIn" role="alert">{successMessage}</div>}
       <form onSubmit={handleTrade}>
         <div className="mb-3">
           <div className="btn-group" role="group">
@@ -191,6 +179,7 @@ const TradeTab = ({ stocks }) => {
           Place Order
         </button>
       </form>
+      <ToastContainer/>
     </div>
   );
 };
