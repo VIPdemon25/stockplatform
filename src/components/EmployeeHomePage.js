@@ -127,6 +127,7 @@ const EmployeeHomePage = () => {
       symbol: updatedStock.symbol,
       open: updatedStock.open,
       last: updatedStock.last,
+      type: updatedStock.type,
       totalShares: updatedStock.totalShares,
     };
     console.log(backendPayLoad);
