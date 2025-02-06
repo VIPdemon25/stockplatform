@@ -13,58 +13,58 @@ import axios from "axios";
 
 // Dummy stock data for testing
 const stockList = [
-  { stockId: 1, name: "Apple Inc.", symbol: "AAPL", open: 150.25, last: 151.5 },
-  {
-    stockId: 2,
-    name: "Microsoft Corp.",
-    symbol: "MSFT",
-    open: 280.75,
-    last: 282.0,
-  },
-  {
-    stockId: 3,
-    name: "Amazon.com Inc.",
-    symbol: "AMZN",
-    open: 3380.0,
-    last: 3395.5,
-  },
-  {
-    stockId: 4,
-    name: "Alphabet Inc.",
-    symbol: "GOOGL",
-    open: 2410.0,
-    last: 2415.75,
-  },
-  { stockId: 5, name: "Tesla Inc.", symbol: "TSLA", open: 690.5, last: 678.25 },
-  {
-    stockId: 6,
-    name: "JPMorgan Chase",
-    symbol: "JPM",
-    open: 155.0,
-    last: 156.75,
-  },
-  {
-    stockId: 7,
-    name: "Bank of America",
-    symbol: "BAC",
-    open: 41.5,
-    last: 41.75,
-  },
-  { stockId: 8, name: "Wells Fargo", symbol: "WFC", open: 46.75, last: 46.25 },
-  {
-    stockId: 9,
-    name: "Caterpillar Inc.",
-    symbol: "CAT",
-    open: 235.25,
-    last: 239.0,
-  },
-  {
-    stockId: 10,
-    name: "Deere & Company",
-    symbol: "DE",
-    open: 355.0,
-    last: 352.75,
-  },
+  // { stockId: 1, name: "Apple Inc.", symbol: "AAPL", open: 150.25, last: 151.5 },
+  // {
+  //   stockId: 2,
+  //   name: "Microsoft Corp.",
+  //   symbol: "MSFT",
+  //   open: 280.75,
+  //   last: 282.0,
+  // },
+  // {
+  //   stockId: 3,
+  //   name: "Amazon.com Inc.",
+  //   symbol: "AMZN",
+  //   open: 3380.0,
+  //   last: 3395.5,
+  // },
+  // {
+  //   stockId: 4,
+  //   name: "Alphabet Inc.",
+  //   symbol: "GOOGL",
+  //   open: 2410.0,
+  //   last: 2415.75,
+  // },
+  // { stockId: 5, name: "Tesla Inc.", symbol: "TSLA", open: 690.5, last: 678.25 },
+  // {
+  //   stockId: 6,
+  //   name: "JPMorgan Chase",
+  //   symbol: "JPM",
+  //   open: 155.0,
+  //   last: 156.75,
+  // },
+  // {
+  //   stockId: 7,
+  //   name: "Bank of America",
+  //   symbol: "BAC",
+  //   open: 41.5,
+  //   last: 41.75,
+  // },
+  // { stockId: 8, name: "Wells Fargo", symbol: "WFC", open: 46.75, last: 46.25 },
+  // {
+  //   stockId: 9,
+  //   name: "Caterpillar Inc.",
+  //   symbol: "CAT",
+  //   open: 235.25,
+  //   last: 239.0,
+  // },
+  // {
+  //   stockId: 10,
+  //   name: "Deere & Company",
+  //   symbol: "DE",
+  //   open: 355.0,
+  //   last: 352.75,
+  // },
 ];
 
 
@@ -82,7 +82,7 @@ const DashboardTab = ({ stocks = stockList }) => {
 
   const getDistinctColor = (index) => {
     const colors = ["#FF0000", "#00FF00", "#b507b5"]; // Red, Green, Purple
-    return colors[index % colors.length]; // Cycle through the three colors
+    return colors[index % colors.length]; // Cycle through the three colors  ;
   };
 
   useEffect(() => {

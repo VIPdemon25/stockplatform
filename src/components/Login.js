@@ -43,7 +43,7 @@ const Login = () => {
         // Store JWT token and account ID in local storage
         sessionStorage.setItem("token", token.token); // Store the JWT token  
         sessionStorage.setItem("accountId", accountId); // Store the account ID
-        sessionStorage.setItem("authority",token.authorities[0].authority);
+        sessionStorage.setItem("authority",token.authorities[0].authority);  
         if(sessionStorage.getItem("authority") === "STOCKADMIN"){
           navigate("/employee-home"); // Redirect to the home page
         }

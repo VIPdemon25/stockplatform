@@ -37,6 +37,7 @@ const TradeTab = ({ stocks }) => {
       sellWithRisk: { ...r_basePayload, typeOfPurchase: "marketplan", typeOfSell: "stoploss", riskPerTrade: 0, stopLoss, entryPrice: total_price }
     };
 
+    console.log(payloads);
     // send data to backend with appropriate payload
     try {
       if (tradeType === "buy") {
