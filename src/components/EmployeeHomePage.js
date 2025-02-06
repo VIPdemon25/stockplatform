@@ -141,6 +141,7 @@ const EmployeeHomePage = () => {
       last: updatedStock.last,
       type:  updatedStock.type,
       totalShares: updatedStock.totalShares,
+      type: updatedStock.type,
     };
     console.log(backendPayLoad);
     setIsUpdating(true);
