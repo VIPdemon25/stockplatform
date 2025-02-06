@@ -136,6 +136,7 @@ if (!portfolio) {
                   <th>Symbol</th>
                   <th>Value</th>
                   <th>Percentage</th>
+                  <th>Number of Shares</th>
                 </tr>
               </thead>
               <tbody>
@@ -144,6 +145,7 @@ if (!portfolio) {
                     <td>{holding.name}</td>
                     <td>${holding.value.toLocaleString()}</td>
                     <td>{holding.percentage}%</td>
+                    <td>{holding.numShares}</td>
                   </tr>
                 ))}
               </tbody>

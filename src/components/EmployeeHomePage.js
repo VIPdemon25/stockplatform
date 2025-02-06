@@ -128,6 +128,7 @@ const EmployeeHomePage = () => {
       open: updatedStock.open,
       last: updatedStock.last,
       totalShares: updatedStock.totalShares,
+      type: updatedStock.type,
     };
     console.log(backendPayLoad);
     setIsUpdating(true);
