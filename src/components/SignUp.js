@@ -2,30 +2,32 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 import { CSSTransition } from "react-transition-group";
 import { useFormik } from "formik";
-import * as Yup from "yup";
-import axios from "axios";
+import * as Yup from "yup"; 
+import axios from "axios"; 
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importing the eye icons
 
 const SignUp = () => {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false); // Loading state
   const [success, setSuccess] = useState(false); // Success state
-  const nodeRef = useRef(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const nodeRef = useRef(null);// Ref for CSSTransition
+  const navigate = useNavigate(); // Hook for navigation   
 
-  useEffect(() => {
+  useEffect(() => {// Show form after component mounts
     setShowForm(true);
-  }, []);
+  }, []);  
 
   // Validation schema using Yup
-  const validationSchema = Yup.object({
-    fname: Yup.string()
-      .min(3, "First name must be at least 3 characters")
+  const validationSchema = Yup.object({    
+    fname: Yup.string() 
+      .min(3, "First name must be at least 3 characters") 
       .required("First name is required"),
     lname: Yup.string()
       .min(3, "Last name must be at least 3 characters")
       .required("Last name is required"),
     email: Yup.string()
-      .email("Invalid email address")
+      .email("Invalid email address") 
       .matches(/@cognizant\.com$/, "Only @cognizant.com emails are allowed")
       .required("Email is required"),
     username: Yup.string().required("Username is required"),
@@ -35,7 +37,7 @@ const SignUp = () => {
   });
 
   // Formik hook
-  const formik = useFormik({
+  const formik = useFormik({ 
     initialValues: {
       fname: "",
       lname: "",
@@ -43,19 +45,19 @@ const SignUp = () => {
       username: "",
       password: "",
     },
-    validationSchema,
+    validationSchema, 
     onSubmit: async (values) => {
       const backendPayLoad = {
         username: values.username,
-        password: values.password,
-        fname: values.fname,
+        password: values.password, 
+        fname: values.fname, 
         lname: values.lname,
         email: values.email,
         roles: "TRADER",
       };
 
       try {
-        setLoading(true); // Enable loading state
+        setLoading(true); // Enable loading state 
         const response = await axios.post("http://localhost:9091/v1/signup", backendPayLoad);
         console.log("Signup successful", response.data);
 
@@ -70,28 +72,32 @@ const SignUp = () => {
         console.error("Signup failed", error.response?.data || error.message);
         alert("Signup failed. Please try again."); // Show error message
       } finally {
-        setLoading(false); // Disable loading state
+        setLoading(false); // Disable loading state  
       }
     },
   });
 
-  return (
-    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark">
-      <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
-        <i className="fas fa-home me-2"></i>Home
-      </Link>
-      {/* Add "Signup as Admin" link at the top right */}
-      <Link to="/signup-employee" className="position-absolute top-0 end-0 m-4 text-light  home-link">
-        Signup as Admin
-      </Link>
-      <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}>
-        <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}>
-          <div className="card-body">
-            <h2 className="card-title text-center mb-4 text-primary">Sign Up for Elevate</h2>
+  // Function to toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
+  return (
+    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
+    style={{
+      background: "linear-gradient(135deg, #000000, #1D2671)",
+    }}>
+      <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
+        <i className="fas fa-home me-2"></i>Home  
+      </Link>
+      <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}> 
+        <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}> 
+          <div className="card-body">
+            <h2 className="card-title text-center mb-4 text-primary">Sign Up for Speculator</h2> 
+ 
             {/* Success Message */}
-            {success && (
-              <div className="alert alert-success text-center" role="alert">
+            {success && ( 
+              <div className="alert alert-success text-center" role="alert"> 
                 Account created successfully! Redirecting to login...
               </div>
             )}
@@ -173,16 +179,25 @@ const SignUp = () => {
                 <label htmlFor="password" className="form-label">
                   Password
                 </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
-                  name="password"
-                  placeholder="Create a password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    className="form-control bg-dark text-light border-primary animate__animated animate__fadeInUp animate__faster"
+                    name="password"
+                    placeholder="Create a password"
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary password-toggle"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? <FaEyeSlash className="icon-white" /> : <FaEye className="icon-white" />}
+                  </button>
+                </div>
                 {formik.touched.password && formik.errors.password ? (
                   <div className="text-danger">{formik.errors.password}</div>
                 ) : null}
@@ -193,7 +208,7 @@ const SignUp = () => {
                   className="btn btn-primary animate__animated animate__fadeInUp animate__faster"
                   disabled={loading} // Disable button while loading
                 >
-                  {loading ? "Signing Up..." : "Sign Up"}
+                  {loading ? "Signing Up..." : "Sign Up"}  
                 </button>
               </div>
             </form>
@@ -208,6 +223,6 @@ const SignUp = () => {
       </CSSTransition>
     </div>
   );
-};
+};  
 
 export default SignUp;

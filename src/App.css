@@ -769,3 +769,45 @@ body {
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
 }
 
+/*Landing page extra css*/
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  transform: translateY(-2px);
+}
+
+/*Modal styles*/
+.modal-content.custom-modal {
+  background-color: #000000; /* Black background color */
+  color: #ffffff; /* White text */
+}
+
+.modal-header.custom-header {
+  background-color: #007bff; /* Blue background color */
+  border-bottom: 1px solid #0056b3; /* Border color to match the blue theme */
+  color: #ffffff; /* White text */
+}
+
+.modal-footer.custom-footer {
+  background-color: #000000; /* Black background color */
+  border-top: 1px solid #007bff; /* Border color to match the blue theme */
+  color: #ffffff; /* White text */
+}
+
+.custom-close {
+  color: #ffffff; /* White close button */
+}
+
+.btn-close:focus {
+  box-shadow: none; /* Remove focus outline from close button */
+}

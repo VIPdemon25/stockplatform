@@ -124,10 +124,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
               <option value="" disabled>
                 Select Type of Company
               </option>
-              <option value="Public">Public</option>
-              <option value="Private">Private</option>
-              <option value="Startup">Startup</option>
-              <option value="Other">Other</option>
+              <option value="construction">Construction</option>
+              <option value="technology">Technology</option>
+              <option value="finance">Finance</option>
+                <option value="Other">Other</option>
             </select>
           </div>
 

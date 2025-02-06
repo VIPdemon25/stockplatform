@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 
-const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, className, stocks}) => {
-  const [filteredStocks, setFilteredStocks] = useState([])
+const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, className, stocks}) => { 
+  const [filteredStocks, setFilteredStocks] = useState([]) 
 
-  // Dummy data for testing (update with the new fields)
+  
 
   useEffect(() => {
     const filtered = stocks.filter((stock) => {
@@ -14,7 +14,7 @@ const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, classN
       return matchesSearch && matchesFilter
     })
     setFilteredStocks(filtered)
-  }, [searchQuery, filterType])
+  }, [searchQuery, filterType, stocks])
 
   return (
     <div
