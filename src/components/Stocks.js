@@ -1,30 +1,32 @@
-import React, { useState, useEffect } from "react"
-import { useLocation } from "react-router-dom"
-import { ArrowUp, ArrowDown } from "lucide-react"
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowUp, ArrowDown } from "lucide-react";
+import { MdOutlineShoppingCart, MdOutlineAttachMoney } from "react-icons/md"; // Import new icons
 
-const Stocks = ({stocks}) => {
-  // const [stocks, setStocks] = useState([])
-  const [selectedStock, setSelectedStock] = useState(null)
-  const location = useLocation()
-
-  // Dummy data for testing (update with the new fields)
+const Stocks = ({ stocks }) => {
+  const [selectedStock, setSelectedStock] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search) 
-    const stockId = params.get("id")
+    const params = new URLSearchParams(location.search);
+    const stockId = params.get("id");
     if (stockId) {
-      const stock = stocks.find((s) => s.stockId === Number.parseInt(stockId))
-      setSelectedStock(stock)
+      const stock = stocks.find((s) => s.stockId === Number.parseInt(stockId));
+      setSelectedStock(stock);
     } else {
-      setSelectedStock(null)
+      setSelectedStock(null);
     }
   }, [location.search, stocks]);
-  
+
+  const handleTrade = (type, stock) => {
+    navigate(`/home/trade`, { state: { type, symbol: stock.symbol, stockName: stock.name } });
+  };
 
   const renderStockCard = (stock) => {
-    const priceChange = stock.last - stock.open
-    const priceChangePercent = (priceChange / stock.open) * 100
-    const isPositive = priceChange >= 0
+    const priceChange = stock.last - stock.open;
+    const priceChangePercent = (priceChange / stock.open) * 100;
+    const isPositive = priceChange >= 0;
 
     return (
       <div key={stock.stockId} className="col-md-4 mb-4">
@@ -43,24 +45,31 @@ const Stocks = ({stocks}) => {
                 {isPositive ? <ArrowUp size={16} /> : <ArrowDown size={16} />}${Math.abs(priceChange).toFixed(2)} (
                 {priceChangePercent.toFixed(2)}%)
               </p>
+              <div className="d-flex justify-content-around mt-3">
+                <button className="btn btn-success d-flex align-items-center" onClick={() => handleTrade("buy", stock)}>
+                  <MdOutlineShoppingCart className="me-2" /> Buy
+                </button>
+                <button className="btn btn-danger d-flex align-items-center" onClick={() => handleTrade("sell", stock)}>
+                  <MdOutlineAttachMoney className="me-2" /> Sell
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
-  const renderStockList = () => <div className="row">{stocks.map(renderStockCard)}</div>
+  const renderStockList = () => <div className="row">{stocks.map(renderStockCard)}</div>;
 
-  const renderSelectedStock = () => renderStockCard(selectedStock)
+  const renderSelectedStock = () => renderStockCard(selectedStock);
 
   return (
     <div className="stocks animate__animated animate__fadeIn">
       <h2 className="mb-4 text-primary">Stocks</h2>
       {selectedStock ? renderSelectedStock() : renderStockList()}
     </div>
-  )
-}
+  );
+};
 
-export default Stocks
-
+export default Stocks;

@@ -32,8 +32,8 @@ const PortfolioTab = ({ onBack, stocks }) => {
                     value: value,
                 };
             });
-
-            const totalValue = updatedHoldings.reduce((sum, holding) => sum + holding.value, 0);
+            const filteredHoldings = updatedHoldings.filter(holding => holding.numShares > 0);
+            const totalValue = filteredHoldings.reduce((sum, holding) => sum + holding.value, 0);
             const balance = {
               newBalance: totalValue
             }
@@ -44,7 +44,7 @@ const PortfolioTab = ({ onBack, stocks }) => {
 
 
             // Calculate the percentage for each holding
-            const updatedHoldingsWithPercentage = updatedHoldings.map((holding) => ({
+            const updatedHoldingsWithPercentage = filteredHoldings.map((holding) => ({
                 ...holding,
                 percentage: ((holding.value / totalValue) * 100).toFixed(2),
             }));
