@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { MdOutlineShoppingCart, MdOutlineAttachMoney } from "react-icons/md"; // Import new icons
+import { Button } from "react-bootstrap";
+import { ShoppingCart, DollarSign } from "lucide-react";
 
 const Stocks = ({ stocks }) => {
   const [selectedStock, setSelectedStock] = useState(null);
@@ -20,7 +22,9 @@ const Stocks = ({ stocks }) => {
   }, [location.search, stocks]);
 
   const handleTrade = (type, stock) => {
-    navigate(`/home/trade`, { state: { type, symbol: stock.symbol, stockName: stock.name } });
+    navigate(`/home/trade`, {
+      state: { type, symbol: stock.symbol, stockName: stock.name },
+    });
   };
 
   const renderStockCard = (stock) => {
@@ -36,22 +40,44 @@ const Stocks = ({ stocks }) => {
             <h6 className="card-subtitle mb-2 text-muted">{stock.symbol}</h6>
             <div className="mt-auto">
               <p className="card-text mb-0">
-                <span className="text-muted">Open:</span> <span className="text-light">${stock.open.toFixed(2)}</span>
+                <span className="text-muted">Open:</span>{" "}
+                <span className="text-light">${stock.open.toFixed(2)}</span>
               </p>
               <p className="card-text mb-0">
-                <span className="text-muted">Last:</span> <span className="text-light">${stock.last.toFixed(2)}</span>
+                <span className="text-muted">Last:</span>{" "}
+                <span className="text-light">${stock.last.toFixed(2)}</span>
               </p>
-              <p className={`card-text ${isPositive ? "text-success" : "text-danger"}`}>
-                {isPositive ? <ArrowUp size={16} /> : <ArrowDown size={16} />}${Math.abs(priceChange).toFixed(2)} (
+              <p
+                className={`card-text ${
+                  isPositive ? "text-success" : "text-danger"
+                }`}
+              >
+                {isPositive ? <ArrowUp size={16} /> : <ArrowDown size={16} />}$
+                {Math.abs(priceChange).toFixed(2)} (
                 {priceChangePercent.toFixed(2)}%)
               </p>
               <div className="d-flex justify-content-around mt-3">
-                <button className="btn btn-success d-flex align-items-center" onClick={() => handleTrade("buy", stock)}>
+                {/* <button className="btn btn-success d-flex align-items-center" onClick={() => handleTrade("buy", stock)}>
                   <MdOutlineShoppingCart className="me-2" /> Buy
                 </button>
                 <button className="btn btn-danger d-flex align-items-center" onClick={() => handleTrade("sell", stock)}>
                   <MdOutlineAttachMoney className="me-2" /> Sell
-                </button>
+                </button> */}
+                <Button
+                  variant="primary"
+                  className="custom-buy-button"
+                  onClick={() => handleTrade("buy", stock)}
+                >
+                  <ShoppingCart size={18} className="me-2" /> Buy
+                </Button>
+
+                <Button
+                  variant="danger"
+                  className="custom-sell-button"
+                  onClick={() => handleTrade("sell", stock)}
+                >
+                  <DollarSign size={18} className="me-2" /> Sell
+                </Button>
               </div>
             </div>
           </div>
@@ -60,7 +86,9 @@ const Stocks = ({ stocks }) => {
     );
   };
 
-  const renderStockList = () => <div className="row">{stocks.map(renderStockCard)}</div>;
+  const renderStockList = () => (
+    <div className="row">{stocks.map(renderStockCard)}</div>
+  );
 
   const renderSelectedStock = () => renderStockCard(selectedStock);
 

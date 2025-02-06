@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react";
 
-const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, className, stocks}) => { 
-  const [filteredStocks, setFilteredStocks] = useState([]) 
-
-  
+const SearchResults = ({
+  searchQuery,
+  filterType,
+  onResultClick,
+  onClose,
+  className,
+  stocks,
+}) => {
+  const [filteredStocks, setFilteredStocks] = useState([]);
 
   useEffect(() => {
     const filtered = stocks.filter((stock) => {
       const matchesSearch =
         stock.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        stock.symbol.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesFilter = filterType === "" || stock.type === filterType
-      return matchesSearch && matchesFilter
-    })
-    setFilteredStocks(filtered)
-  }, [searchQuery, filterType, stocks])
+        stock.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesFilter = filterType === "" || stock.type === filterType;
+      return matchesSearch && matchesFilter;
+    });
+    setFilteredStocks(filtered);
+  }, [searchQuery, filterType, stocks]);
 
   return (
     <div
@@ -44,8 +49,7 @@ const SearchResults = ({ searchQuery, filterType, onResultClick, onClose, classN
         <p className="text-muted">No results found.</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default SearchResults
-
+export default SearchResults;

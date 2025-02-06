@@ -9,10 +9,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importing the eye icons
 const Login = () => {
   const [showForm, setShowForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
-  const nodeRef = useRef(null);   
+  const nodeRef = useRef(null);
   const navigate = useNavigate(); // Hook for navigation
 
-  useEffect(() => {  
+  useEffect(() => {
     setShowForm(true);
   }, []);
 
@@ -34,20 +34,22 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         // Send login request to the backend
-        const response = await axios.post("http://localhost:9091/v1/login", values);   
+        const response = await axios.post(
+          "http://localhost:9091/v1/login",
+          values
+        );
         console.log("Login successful", response.data);
 
         // Extract JWT token and account ID from the response
-        const { token, accountId } = response.data;     
+        const { token, accountId } = response.data;
 
         // Store JWT token and account ID in local storage
-        sessionStorage.setItem("token", token.token); // Store the JWT token  
+        sessionStorage.setItem("token", token.token); // Store the JWT token
         sessionStorage.setItem("accountId", accountId); // Store the account ID
-        sessionStorage.setItem("authority",token.authorities[0].authority);
-        if(sessionStorage.getItem("authority") === "STOCKADMIN"){
+        sessionStorage.setItem("authority", token.authorities[0].authority);
+        if (sessionStorage.getItem("authority") === "STOCKADMIN") {
           navigate("/employee-home"); // Redirect to the home page
-        }
-        else{
+        } else {
           navigate("/home");
         }
 
@@ -65,17 +67,34 @@ const Login = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
-    style={{
-      background: "linear-gradient(135deg, #000000, #1D2671)",
-    }}>
-      <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
+    <div
+      className="container-fluid vh-100 d-flex justify-content-center align-items-center bg-dark"
+      style={{
+        background: "linear-gradient(135deg, #000000, #1D2671)",
+      }}
+    >
+      <Link
+        to="/"
+        className="position-absolute top-0 start-0 m-4 text-light home-link"
+      >
         <i className="fas fa-home me-2"></i>Home
       </Link>
-      <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}>
-        <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "20rem" }}>
-          <div className="card-body">  
-            <h2 className="card-title text-center mb-4 text-primary">Login to Speculator</h2>
+      <CSSTransition
+        in={showForm}
+        timeout={300}
+        classNames="fade"
+        unmountOnExit
+        nodeRef={nodeRef}
+      >
+        <div
+          ref={nodeRef}
+          className="card bg-dark text-light shadow-lg"
+          style={{ width: "20rem" }}
+        >
+          <div className="card-body">
+            <h2 className="card-title text-center mb-4 text-primary">
+              Login to Speculator
+            </h2>
             <form onSubmit={formik.handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="username" className="form-label">
@@ -115,7 +134,11 @@ const Login = () => {
                     className="btn btn-outline-primary password-toggle"
                     onClick={togglePasswordVisibility}
                   >
-                    {showPassword ? <FaEyeSlash className="icon-white" /> : <FaEye className="icon-white" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="icon-white" />
+                    ) : (
+                      <FaEye className="icon-white" />
+                    )}
                   </button>
                 </div>
                 {formik.touched.password && formik.errors.password ? (
@@ -123,7 +146,10 @@ const Login = () => {
                 ) : null}
               </div>
               <div className="d-grid">
-                <button type="submit" className="btn btn-primary animate__animated animate__fadeInUp animate__faster">
+                <button
+                  type="submit"
+                  className="btn btn-primary animate__animated animate__fadeInUp animate__faster"
+                >
                   Login
                 </button>
               </div>

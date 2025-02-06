@@ -67,7 +67,6 @@ const stockList = [
   },
 ];
 
-
 const DashboardTab = ({ stocks = stockList }) => {
   // Passing stock data as a prop (defaulting to dummy data)
   const [selectedStocks, setSelectedStocks] = useState([]);
@@ -89,11 +88,12 @@ const DashboardTab = ({ stocks = stockList }) => {
     // Commenting out fetching logic for now
     const token = sessionStorage.getItem("token");
     const accountId = sessionStorage.getItem("accountId");
-    axios.get(`http://localhost:9091/api/stocktrader/${accountId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Include the JWT token
-      },
-    }) // Replace with your actual endpoint
+    axios
+      .get(`http://localhost:9091/api/stocktrader/${accountId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the JWT token
+        },
+      }) // Replace with your actual endpoint
       .then((response) => {
         setAccountName(response.data.fname); // Assuming accountName is part of the response
       })

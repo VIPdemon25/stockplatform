@@ -43,24 +43,31 @@ const CreateCompany = ({ fetchStocks }) => {
       formik.setSubmitting(true);
       try {
         // Send the payload to the backend using Axios
-        const response = await axios.post("http://localhost:9091/api/stocks/companies/new", backendPayload,{
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the JWT token
-          },
-        });
+        const response = await axios.post(
+          "http://localhost:9091/api/stocks/companies/new",
+          backendPayload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          }
+        );
 
         // Log the response (for debugging)
         console.log("Stock registration successful:", response.data);
 
         // Call the parent function (if needed)
-        
+
         fetchStocks();
         // Reset the form
         formik.resetForm();
       } catch (error) {
         // Handle errors (e.g., display error message)
-        console.error("Stock registration failed:", error.response?.data || error.message);
-      } finally{
+        console.error(
+          "Stock registration failed:",
+          error.response?.data || error.message
+        );
+      } finally {
         formik.setSubmitting(false);
       }
     },
@@ -97,7 +104,9 @@ const CreateCompany = ({ fetchStocks }) => {
             <input
               type="text"
               className={`form-control bg-dark text-light border-primary ${
-                formik.touched.symbol && formik.errors.symbol ? "is-invalid" : ""
+                formik.touched.symbol && formik.errors.symbol
+                  ? "is-invalid"
+                  : ""
               }`}
               placeholder="Stock Symbol"
               name="symbol"
@@ -115,7 +124,9 @@ const CreateCompany = ({ fetchStocks }) => {
             <input
               type="number"
               className={`form-control bg-dark text-light border-primary ${
-                formik.touched.sharesToRelease && formik.errors.sharesToRelease ? "is-invalid" : ""
+                formik.touched.sharesToRelease && formik.errors.sharesToRelease
+                  ? "is-invalid"
+                  : ""
               }`}
               placeholder="Number of Shares to Release"
               name="sharesToRelease"
@@ -124,7 +135,9 @@ const CreateCompany = ({ fetchStocks }) => {
               onBlur={formik.handleBlur}
             />
             {formik.touched.sharesToRelease && formik.errors.sharesToRelease ? (
-              <div className="invalid-feedback">{formik.errors.sharesToRelease}</div>
+              <div className="invalid-feedback">
+                {formik.errors.sharesToRelease}
+              </div>
             ) : null}
           </div>
 
@@ -133,7 +146,9 @@ const CreateCompany = ({ fetchStocks }) => {
             <div className="input-group position-relative">
               <select
                 className={`form-select bg-dark text-light border-primary pe-5 ${
-                  formik.touched.companyType && formik.errors.companyType ? "is-invalid" : ""
+                  formik.touched.companyType && formik.errors.companyType
+                    ? "is-invalid"
+                    : ""
                 }`}
                 name="companyType"
                 value={formik.values.companyType}
@@ -144,8 +159,8 @@ const CreateCompany = ({ fetchStocks }) => {
                   Select Type of Company
                 </option>
                 <option value="construction">Construction</option>
-              <option value="technology">Technology</option>
-              <option value="finance">Finance</option>
+                <option value="technology">Technology</option>
+                <option value="finance">Finance</option>
                 <option value="Other">Other</option>
               </select>
               <span className="position-absolute end-0 top-0 bottom-0 d-flex align-items-center pe-3 bg-transparent">
@@ -153,7 +168,9 @@ const CreateCompany = ({ fetchStocks }) => {
               </span>
             </div>
             {formik.touched.companyType && formik.errors.companyType ? (
-              <div className="invalid-feedback">{formik.errors.companyType}</div>
+              <div className="invalid-feedback">
+                {formik.errors.companyType}
+              </div>
             ) : null}
           </div>
 
@@ -162,7 +179,9 @@ const CreateCompany = ({ fetchStocks }) => {
             <input
               type="number"
               className={`form-control bg-dark text-light border-primary ${
-                formik.touched.entryPrice && formik.errors.entryPrice ? "is-invalid" : ""
+                formik.touched.entryPrice && formik.errors.entryPrice
+                  ? "is-invalid"
+                  : ""
               }`}
               placeholder="Entry Price"
               name="entryPrice"
@@ -176,7 +195,11 @@ const CreateCompany = ({ fetchStocks }) => {
           </div>
 
           {/* Submit Button */}
-          <button type="submit" className="btn btn-primary w-100" disabled={formik.isSubmitting}>
+          <button
+            type="submit"
+            className="btn btn-primary w-100"
+            disabled={formik.isSubmitting}
+          >
             {formik.isSubmitting ? "Submitting..." : "Submit"}
           </button>
         </form>
