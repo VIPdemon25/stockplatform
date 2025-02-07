@@ -803,32 +803,7 @@ body {
   box-shadow: none; /* Remove focus outline from close button */
 }
 
-/*Stock buy sell buttons*/
-.custom-buy-button,
-.custom-sell-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 10px 16px;
-  transition: all 0.3s ease-in-out;
-}
-
-.custom-buy-button {
-  background: linear-gradient(90deg, #007bff, #0056b3);
-  border: none;
-  color: white;
-}
-
-.custom-sell-button {
-  background: linear-gradient(90deg, #ff4d4d, #b30000);
-  border: none;
-  color: white;
-}
-
-.custom-buy-button:hover,
-.custom-sell-button:hover {
-  transform: translateY(-5px);
-  /* box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); */
-}
+/* input::placeholder{
+  color: #ffffff;
+  opacity: 1.0;
+} */

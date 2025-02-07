@@ -57,13 +57,13 @@ const Stocks = ({ stocks }) => {
                 {priceChangePercent.toFixed(2)}%)
               </p>
               <div className="d-flex justify-content-around mt-3">
-                {/* <button className="btn btn-success d-flex align-items-center" onClick={() => handleTrade("buy", stock)}>
+                <button className="btn btn-success d-flex align-items-center" onClick={() => handleTrade("buy", stock)}>
                   <MdOutlineShoppingCart className="me-2" /> Buy
                 </button>
                 <button className="btn btn-danger d-flex align-items-center" onClick={() => handleTrade("sell", stock)}>
                   <MdOutlineAttachMoney className="me-2" /> Sell
-                </button> */}
-                <Button
+                </button>
+                {/* <Button
                   variant="primary"
                   className="custom-buy-button"
                   onClick={() => handleTrade("buy", stock)}
@@ -77,7 +77,7 @@ const Stocks = ({ stocks }) => {
                   onClick={() => handleTrade("sell", stock)}
                 >
                   <DollarSign size={18} className="me-2" /> Sell
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
