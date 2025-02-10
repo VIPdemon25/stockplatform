@@ -18,8 +18,12 @@ const WatchlistTab = ({ stocks }) => {
   useEffect(() => {
     const currentUserID = getCurrentUserID();
     if (currentUserID) {
-      const storedUserWatchlist1 = localStorage.getItem(`watchlist1_${currentUserID}`);
-      const storedUserWatchlist2 = localStorage.getItem(`watchlist2_${currentUserID}`);
+      const storedUserWatchlist1 = localStorage.getItem(
+        `watchlist1_${currentUserID}`
+      );
+      const storedUserWatchlist2 = localStorage.getItem(
+        `watchlist2_${currentUserID}`
+      );
       if (storedUserWatchlist1) {
         setWatchlist1(JSON.parse(storedUserWatchlist1));
       }
@@ -34,8 +38,14 @@ const WatchlistTab = ({ stocks }) => {
   useEffect(() => {
     const currentUserID = getCurrentUserID();
     if (isLoaded && currentUserID) {
-      localStorage.setItem(`watchlist1_${currentUserID}`, JSON.stringify(watchlist1));
-      localStorage.setItem(`watchlist2_${currentUserID}`, JSON.stringify(watchlist2));
+      localStorage.setItem(
+        `watchlist1_${currentUserID}`,
+        JSON.stringify(watchlist1)
+      );
+      localStorage.setItem(
+        `watchlist2_${currentUserID}`,
+        JSON.stringify(watchlist2)
+      );
     }
   }, [watchlist1, watchlist2, isLoaded]);
 
@@ -81,13 +91,17 @@ const WatchlistTab = ({ stocks }) => {
       <h2 className="mb-4 text-primary">Watchlist</h2>
       <div className="mb-3">
         <button
-          className={`btn btn-outline-primary me-2 ${activeWatchlist === 1 ? "active" : ""}`}
+          className={`btn btn-outline-primary me-2 ${
+            activeWatchlist === 1 ? "active" : ""
+          }`}
           onClick={() => setActiveWatchlist(1)}
         >
           Watchlist 1
         </button>
         <button
-          className={`btn btn-outline-primary ${activeWatchlist === 2 ? "active" : ""}`}
+          className={`btn btn-outline-primary ${
+            activeWatchlist === 2 ? "active" : ""
+          }`}
           onClick={() => setActiveWatchlist(2)}
         >
           Watchlist 2
@@ -106,7 +120,8 @@ const WatchlistTab = ({ stocks }) => {
           </thead>
           <tbody>
             {activeWatchlistData.map((stock) => {
-              const { priceChangePercent, isPositive } = calculatePriceChange(stock);
+              const { priceChangePercent, isPositive } =
+                calculatePriceChange(stock);
 
               return (
                 <tr key={stock.symbol}>
@@ -152,9 +167,12 @@ const WatchlistTab = ({ stocks }) => {
             </div>
             <div className="list-group">
               {stocks
-                .filter((s) => 
-                  s.symbol.toLowerCase().includes(newSymbol.toLowerCase()) &&
-                  !activeWatchlistData.some((stock) => stock.symbol === s.symbol)
+                .filter(
+                  (s) =>
+                    s.symbol.toLowerCase().includes(newSymbol.toLowerCase()) &&
+                    !activeWatchlistData.some(
+                      (stock) => stock.symbol === s.symbol
+                    )
                 )
                 .map((stock, index) => (
                   <button

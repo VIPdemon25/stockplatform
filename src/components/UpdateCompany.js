@@ -32,7 +32,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
         <form onSubmit={handleSubmit}>
           {/* Stock Name */}
           <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Stock Name
             </label>
             <input
@@ -48,7 +51,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
 
           {/* Stock Symbol */}
           <div className="mb-4">
-            <label htmlFor="symbol" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="symbol"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Stock Symbol
             </label>
             <input
@@ -64,7 +70,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
 
           {/* Current Price */}
           <div className="mb-4">
-            <label htmlFor="currentPrice" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="currentPrice"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Current Price
             </label>
             <input
@@ -78,7 +87,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="currentPrice" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="currentPrice"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Last Price
             </label>
             <input
@@ -94,7 +106,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
 
           {/* Total Shares */}
           <div className="mb-4">
-            <label htmlFor="totalShares" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="totalShares"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Total Shares
             </label>
             <input
@@ -110,7 +125,10 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
 
           {/* Company Type */}
           <div className="mb-6">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="type"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Company Type
             </label>
             <select
@@ -128,7 +146,7 @@ const UpdateCompany = ({ stock, onUpdate, onCancel, isUpdating }) => {
               {/* <option value="construction">construction</option> */}
               <option value="technology">Technology</option>
               <option value="finance">Finance</option>
-                <option value="Other">Other</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
