@@ -115,7 +115,7 @@ const AccountDetails = () => {
 
           {/* Username */}
           <div className="mb-4 animate__animated animate__fadeInUp animate__delay-4s">
-            <label className="form-label text-light">Username</label>
+            <label className="form-label text-light">AccountId</label>
             <div className="input-group">
               <span className="input-group-text bg-primary text-light">
                 <AtSign size={18} />
