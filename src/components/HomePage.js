@@ -80,8 +80,7 @@ const HomePage = () => {
         .post(`http://localhost:9091/v1/logout/${accountId}`)
         .then((response) => {
           console.log("Logout successful:", response.data);
-          sessionStorage.removeItem("token");
-          sessionStorage.removeItem("accountId");
+          sessionStorage.clear();
           navigate("/login");
         })
         .catch((error) => {
