@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";// used to create pie chart
 import axios from "axios";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];//set of colors used for the pie chart 
 
 const PortfolioTab = ({ onBack, stocks }) => {
   const [portfolio, setPortfolio] = useState(null);
   const [holdings, setHoldings] = useState([]);
 
-  // Fetch portfolio and holdings from API
+  // here useEffect fetches and processes portfolio data, calculates values and percentages, and updates a balance. 
   useEffect(() => {
     const fetchData = async () => {
         try {
@@ -22,36 +22,36 @@ const PortfolioTab = ({ onBack, stocks }) => {
             });
             const fetchedHoldings = response.data;
 
-            // Map holdings to stocks and calculate values
-            const updatedHoldings = fetchedHoldings.map((holding) => {
-                const stock = stocks.find((stock) => stock.stockId === holding.stockId);
-                const value = holding.numShares * (stock ? stock.open : 0);
-                return {
-                    ...holding,
+            
+            const updatedHoldings = fetchedHoldings.map((holding) => {//The .map() function creates a new list (updatedHoldings) with the updated information
+                const stock = stocks.find((stock) => stock.stockId === holding.stockId);// find the details of a specific stock within a list of available stocks.
+                const value = holding.numShares * (stock ? stock.open : 0);// here we are calculates the total value of the holding
+                return {// here we r creates a new object based on the information it has gathered
+                    ...holding,// spread operator to copy the existing holding object into a new one 
                     name: stock ? stock.symbol : "Unknown",
                     value: value,
                 };
             });
-            const filteredHoldings = updatedHoldings.filter(holding => holding.numShares > 0);
-            const totalValue = filteredHoldings.reduce((sum, holding) => sum + holding.value, 0);
+            const filteredHoldings = updatedHoldings.filter(holding => holding.numShares > 0);//it filters out any holdings with zero shares
+            const totalValue = filteredHoldings.reduce((sum, holding) => sum + holding.value, 0);//it calculates the total value of the portfolio
             const balance = {
               newBalance: totalValue
             }
             console.log(balance);
             
-            // Patch holdings (or whatever action you intend)
+           //this will update the balance in the database
             await axios.patch(`http://localhost:9091/api/portfolios/${accountId}/updatebalance`, balance);
 
 
             // Calculate the percentage for each holding
-            const updatedHoldingsWithPercentage = filteredHoldings.map((holding) => ({
+            const updatedHoldingsWithPercentage = filteredHoldings.map((holding) => ({//it calculates the percentage of the total value that each holding represents
                 ...holding,
                 percentage: ((holding.value / totalValue) * 100).toFixed(2),
             }));
 
             setHoldings(updatedHoldingsWithPercentage);
 
-            // Set portfolio value
+            //it updates the portfolio state with the total value of the portfolio
             setPortfolio({ value: totalValue });
         } catch (error) {
             console.error("Error fetching or updating holdings:", error);
@@ -59,9 +59,9 @@ const PortfolioTab = ({ onBack, stocks }) => {
     };
 
     fetchData();
-}, [stocks]);
+}, [stocks]);// here whenever the stock prop changes the useEffect will run again
 
-if (!portfolio) {
+if (!portfolio) {// if there is no portfolio data, the component will render a message to the user
     return (
         <div className="portfolio-tab">
             <h2 className="text-primary">No Portfolio Data</h2>
@@ -72,17 +72,6 @@ if (!portfolio) {
     );
 }
 
-
-  if (!portfolio) {
-    return (
-      <div className="portfolio-tab">
-        <h2 className="text-primary">No Portfolio Data</h2>
-        <button className="btn btn-outline-primary" onClick={onBack}>
-          <ArrowLeft size={18} className="me-2" /> Back to Dashboard
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="portfolio-tab animate__animated animate__fadeIn">
@@ -95,7 +84,7 @@ if (!portfolio) {
           <div className="card bg-dark">
             <div className="card-body">
               <h5 className="card-title text-primary">Portfolio Value</h5>
-              <p className="display-4 text-light">${portfolio.value.toLocaleString()}</p>
+              <p className="display-4 text-light">${portfolio.value.toLocaleString()}</p>// 
             </div>
           </div>
         </div>
@@ -116,7 +105,7 @@ if (!portfolio) {
                     label
                   >
                     {holdings.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />// here we are creating a cell for each holding in the portfolio
                     ))}
                   </Pie>
                   <Tooltip />

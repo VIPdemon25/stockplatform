@@ -535,6 +535,7 @@ body {
 
 .text-primary {
   color: #4a90e2 !important;
+  /* margin-bottom: 80px !important; */
 }
 
 .text-light {

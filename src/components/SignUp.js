@@ -7,18 +7,18 @@ import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Importing the eye icons
 
 const SignUp = () => {
-  const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [success, setSuccess] = useState(false); // Success state
+  const [showForm, setShowForm] = useState(false);//whether the signup form is visible or not.
+  const [loading, setLoading] = useState(false); // Loading state When the signup process is happening
+  const [success, setSuccess] = useState(false); // Success state display a success message
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const nodeRef = useRef(null);// Ref for CSSTransition
-  const navigate = useNavigate(); // Hook for navigation   
+  const navigate = useNavigate(); // redirect them after signup  
 
   useEffect(() => {// Show form after component mounts
     setShowForm(true);
   }, []);  
 
-  // Validation schema using Yup
+  // Validation schema defines the expected structure and rules for the data our form will handle
   const validationSchema = Yup.object({    
     fname: Yup.string() 
       .min(3, "First name must be at least 3 characters") 
@@ -90,6 +90,7 @@ const SignUp = () => {
       <Link to="/" className="position-absolute top-0 start-0 m-4 text-light home-link">
         <i className="fas fa-home me-2"></i>Home  
       </Link>
+      {/*  adding transition effects to the form */}
       <CSSTransition in={showForm} timeout={300} classNames="fade" unmountOnExit nodeRef={nodeRef}> 
         <div ref={nodeRef} className="card bg-dark text-light shadow-lg" style={{ width: "25rem" }}> 
           <div className="card-body">
