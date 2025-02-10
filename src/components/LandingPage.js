@@ -12,9 +12,9 @@ const LandingPage = () => {
 
     // Modern color palette
     const colors = {
-      primary: "#6366f1",    // Indigo
-      secondary: "#ec4899",  // Pink
-      background: "#0f172a"  // Navy
+      primary: "#6366f1", // Indigo
+      secondary: "#ec4899", // Pink
+      background: "#0f172a", // Navy
     };
 
     // Particle system
@@ -23,7 +23,7 @@ const LandingPage = () => {
         this.reset();
         this.velocity = {
           x: (Math.random() - 0.5) * 0.5,
-          y: (Math.random() - 0.5) * 0.5
+          y: (Math.random() - 0.5) * 0.5,
         };
       }
 
@@ -57,7 +57,7 @@ const LandingPage = () => {
 
     // Create particles
     const particles = Array.from({ length: 100 }, () => new Particle());
-    
+
     // Mouse interaction
     const mouse = { x: null, y: null, radius: 100 };
     const handleMouseMove = (e) => {
@@ -70,7 +70,7 @@ const LandingPage = () => {
       ctx.fillStyle = colors.background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      particles.forEach(particle => {
+      particles.forEach((particle) => {
         particle.update();
 
         // Mouse interaction
@@ -86,16 +86,16 @@ const LandingPage = () => {
         particle.draw();
 
         // Draw connections between nearby particles
-        particles.forEach(other => {
+        particles.forEach((other) => {
           const dx = other.x - particle.x;
           const dy = other.y - particle.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          
+
           if (distance < 100) {
             ctx.beginPath();
             ctx.strokeStyle = particle.color;
             ctx.lineWidth = 0.2;
-            ctx.globalAlpha = 1 - distance/100;
+            ctx.globalAlpha = 1 - distance / 100;
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
             ctx.stroke();
@@ -112,7 +112,7 @@ const LandingPage = () => {
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      particles.forEach(particle => particle.reset());
+      particles.forEach((particle) => particle.reset());
     };
 
     window.addEventListener("resize", handleResize);
@@ -125,7 +125,7 @@ const LandingPage = () => {
   return (
     <div className="landing-page vh-100 position-relative overflow-hidden">
       <canvas ref={canvasRef} className="background-animation" />
-      
+
       <div className="position-absolute top-50 start-50 translate-middle text-center">
         <div className="glassmorphism p-5 rounded-4 shadow">
           <h1 className="display-1 mb-4 text-white fw-bold">
@@ -135,14 +135,14 @@ const LandingPage = () => {
             Intelligent Investing for the Modern Era
           </p>
           <div className="d-flex gap-3 justify-content-center">
-            <Link 
-              to="/signup" 
+            <Link
+              to="/signup"
               className="btn btn-lg btn-primary px-5 py-3 rounded-pill fw-bold hover-glow"
             >
               Get Started
             </Link>
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="btn btn-lg btn-outline-light px-5 py-3 rounded-pill fw-bold"
             >
               Existing Account

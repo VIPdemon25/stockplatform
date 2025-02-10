@@ -272,8 +272,6 @@ body {
   }
 }
 
-
-
 @keyframes slideIn {
   from {
     transform: translateX(-100%);
@@ -372,7 +370,6 @@ body {
   color: #ffffff;
 }
 
-
 .btn:hover,
 .nav-link:hover,
 .dropdown-item:hover {
@@ -387,7 +384,6 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
 
-
 .employee-home .card {
   border: 1px solid #4a90e2;
   transition: all 0.3s ease;
@@ -395,7 +391,6 @@ body {
 
 .employee-home .card:hover {
   transform: translateY(-5px);
-  
 }
 
 .employee-home .form-control {
@@ -458,12 +453,11 @@ body {
 }
 
 .col-md-4 {
-  padding-top: 20px; 
+  padding-top: 20px;
 }
 
-
 .col-md-4 > .card {
-  margin-bottom: 1.5rem; 
+  margin-bottom: 1.5rem;
 }
 
 .employee-home .card {
@@ -471,7 +465,7 @@ body {
 }
 
 .employee-home .card:hover {
-  transform: translateY(-2px); 
+  transform: translateY(-2px);
 }
 
 /* Ensure the transaction list stays contained */
@@ -502,7 +496,6 @@ body {
   border-bottom: 2px solid #4a90e2;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
-  
 }
 .bg-gradient-primary {
   border: 1px solid rgba(74, 144, 226, 0.3) !important;
@@ -522,7 +515,6 @@ body {
 .recharts-cartesian-grid line {
   stroke: #444 !important;
 }
-
 
 /* Global Styles for UpdateCompany Modal */
 .bg-dark {
@@ -695,7 +687,6 @@ body {
   background-color: #000000;
 }
 
-
 /* Add these styles to your existing App.css file */
 
 /* Add or update these styles in your App.css file */
@@ -812,3 +803,8 @@ body {
 .btn-close:focus {
   box-shadow: none; /* Remove focus outline from close button */
 }
+
+/* input::placeholder{
+  color: #ffffff;
+  opacity: 1.0;
+} */

@@ -6,7 +6,6 @@ import SearchResults from "./SearchResults";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-
 const Navbar = ({ handleLogout, stocks }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState("");
@@ -15,7 +14,7 @@ const Navbar = ({ handleLogout, stocks }) => {
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setShowSearchResults(true);
   };
 
@@ -34,7 +33,7 @@ const Navbar = ({ handleLogout, stocks }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -48,7 +47,10 @@ const Navbar = ({ handleLogout, stocks }) => {
         <Link to="/home" className="navbar-brand">
           Speculator
         </Link>
-        <div className="d-flex align-items-center position-relative" style={{ zIndex: 1050 }}>
+        <div
+          className="d-flex align-items-center position-relative"
+          style={{ zIndex: 1050 }}
+        >
           <form onSubmit={handleSearch} className="d-flex me-2">
             <input
               type="text"
@@ -57,7 +59,11 @@ const Navbar = ({ handleLogout, stocks }) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <select className="form-select me-2" value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+            <select
+              className="form-select me-2"
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+            >
               <option value="">All Types</option>
               <option value="construction">Construction</option>
               <option value="technology">Technology</option>
@@ -87,44 +93,63 @@ const Navbar = ({ handleLogout, stocks }) => {
             >
               <Settings size={18} />
             </button>
-            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+            <ul
+              className="dropdown-menu dropdown-menu-end"
+              aria-labelledby="accountDropdown"
+            >
               <li>
                 <Link to="/home/account-details" className="dropdown-item">
                   <User size={18} className="me-2" />
                   Account Details
                 </Link>
               </li>
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
               <li>
                 <Link to="/all-trades" className="dropdown-item">
                   <User size={18} className="me-2" />
                   My Trades
                 </Link>
               </li>
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
               <li>
                 <Link to="/home/update-account" className="dropdown-item">
                   <Settings size={18} className="me-2" />
                   Update Account
                 </Link>
               </li>
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
               <li>
                 <Link to="/about" className="dropdown-item">
                   <Info size={18} className="me-2" />
                   About Us
                 </Link>
               </li>
-              <li><hr className="dropdown-divider" /></li>
               <li>
-                <button onClick={() => setShowDeleteModal(true)} className="dropdown-item text-danger">
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="dropdown-item text-danger"
+                >
                   <Trash2 size={18} className="me-2" />
                   Delete Account
                 </button>
               </li>
-              <li><hr className="dropdown-divider" /></li>
               <li>
-                <button onClick={handleLogout} className="dropdown-item text-warning">
+                <hr className="dropdown-divider" />
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="dropdown-item text-warning"
+                >
                   <LogOut size={18} className="me-2" />
                   Logout
                 </button>
@@ -133,22 +158,50 @@ const Navbar = ({ handleLogout, stocks }) => {
           </div>
         </div>
       </div>
-      
 
       {/* Bootstrap Delete Confirmation Modal */}
-      <div className={`modal ${showDeleteModal ? 'show' : ''}`} tabIndex="-1" style={{ display: showDeleteModal ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+      <div
+        className={`modal ${showDeleteModal ? "show" : ""}`}
+        tabIndex="-1"
+        style={{
+          display: showDeleteModal ? "block" : "none",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }}
+      >
         <div className="modal-dialog">
           <div className="modal-content custom-modal">
             <div className="modal-header custom-header">
-              <h5 className="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
-              <button type="button" className="btn-close custom-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowDeleteModal(false)}></button>
+              <h5 className="modal-title" id="deleteModalLabel">
+                Confirm Deletion
+              </h5>
+              <button
+                type="button"
+                className="btn-close custom-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => setShowDeleteModal(false)}
+              ></button>
             </div>
             <div className="modal-body">
-              Are you sure you want to delete your account? This action cannot be undone.
+              Are you sure you want to delete your account? This action cannot
+              be undone.
             </div>
             <div className="modal-footer custom-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => setShowDeleteModal(false)}>Cancel</button>
-              <button type="button" className="btn btn-danger" onClick={handleDeleteAccount}>Delete Account</button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={handleDeleteAccount}
+              >
+                Delete Account
+              </button>
             </div>
           </div>
         </div>

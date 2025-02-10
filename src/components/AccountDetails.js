@@ -22,11 +22,14 @@ const AccountDetails = () => {
         const accountId = sessionStorage.getItem("accountId");
 
         // Make the request with the Authorization header
-        const response = await axios.get(`http://localhost:9091/api/stocktrader/${accountId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include the JWT token
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:9091/api/stocktrader/${accountId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the JWT token
+            },
+          }
+        );
 
         // Map the backend response to the frontend state
         setAccountDetails({
@@ -48,7 +51,9 @@ const AccountDetails = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center text-light">Loading account details...</div>; // Loading state
+    return (
+      <div className="text-center text-light">Loading account details...</div>
+    ); // Loading state
   }
 
   if (error) {
