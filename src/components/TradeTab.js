@@ -1,71 +1,139 @@
-import React, { useState} from "react";
-import {ToastContainer ,toast} from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 const TradeTab = ({ stocks }) => {
+  const location = useLocation();
   const [tradeType, setTradeType] = useState("buy");
   const [symbol, setSymbol] = useState("");
-  const [stockName, setStockName] = useState(""); // add stock name
+  const [stockName, setStockName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [useRiskManagement, setUseRiskManagement] = useState(false);
   const [riskPerTrade, setRiskPerTrade] = useState("");
   const [stopLoss, setStopLoss] = useState("");
 
-
+  useEffect(() => {
+    if (location.state) {
+      setTradeType(location.state.type);
+      setSymbol(location.state.symbol);
+      setStockName(location.state.stockName);
+    }
+  }, [location.state]);
 
   const handleTrade = async (e) => {
     e.preventDefault();
-    const stock = stocks.find(stock => stock.symbol === symbol && stock.name === stockName);
+    const stock = stocks.find(
+      (stock) => stock.symbol === symbol && stock.name === stockName
+    );
 
     if (!stock) {
       alert("Invalid stock symbol or name. Please enter correct details.");
       return;
     }
+
     const id = stock.stockId;
     const token = sessionStorage.getItem("token");
     const price_per_share = stock.open;
     const total_price = stock.open * quantity;
     const accountId = sessionStorage.getItem("accountId");
-    const unit_risk=(riskPerTrade/100)*price_per_share;
-    const basePayload = { stockId: id, transType: tradeType, symbol, stockName, numShares: quantity, accountId };
-    const r_basePayload = { stockId: id, transType: tradeType, symbol, stockName, numShares: 0, accountId };
-    const payloads = {
-      buyWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
-      buyWithRisk: { ...r_basePayload, typeOfPurchase: "positionSizing", typeOfSell: "marketplan", riskPerTrade: unit_risk, stopLoss, entryPrice: price_per_share },
-      sellWithoutRisk: { ...basePayload, typeOfPurchase: "marketplan", typeOfSell: "marketplan", riskPerTrade: 0, stopLoss: 0, entryPrice: total_price },
-      sellWithRisk: { ...r_basePayload, typeOfPurchase: "marketplan", typeOfSell: "stoploss", riskPerTrade: 0, stopLoss, entryPrice: total_price }
+    const unit_risk = (riskPerTrade / 100) * price_per_share;
+    const basePayload = {
+      stockId: id,
+      transType: tradeType,
+      symbol,
+      stockName,
+      numShares: quantity,
+      accountId,
     };
-
-    // send data to backend with appropriate payload
+    const r_basePayload = {
+      stockId: id,
+      transType: tradeType,
+      symbol,
+      stockName,
+      numShares: 0,
+      accountId,
+    };
+    const payloads = {
+      buyWithoutRisk: {
+        ...basePayload,
+        typeOfPurchase: "marketplan",
+        typeOfSell: "marketplan",
+        riskPerTrade: 0,
+        stopLoss: 0,
+        entryPrice: total_price,
+      },
+      buyWithRisk: {
+        ...r_basePayload,
+        typeOfPurchase: "positionSizing",
+        typeOfSell: "marketplan",
+        riskPerTrade: unit_risk,
+        stopLoss,
+        entryPrice: price_per_share,
+      },
+      sellWithoutRisk: {
+        ...basePayload,
+        typeOfPurchase: "marketplan",
+        typeOfSell: "marketplan",
+        riskPerTrade: 0,
+        stopLoss: 0,
+        entryPrice: total_price,
+      },
+      sellWithRisk: {
+        ...r_basePayload,
+        typeOfPurchase: "marketplan",
+        typeOfSell: "stoploss",
+        riskPerTrade: 0,
+        stopLoss,
+        entryPrice: price_per_share,
+      },
+    };
+    console.log(payloads);
     try {
       if (tradeType === "buy") {
         if (useRiskManagement) {
-          await axios.post('http://localhost:9090/api/orders/buy/positionSizing', payloads.buyWithRisk,{
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          await axios.post(
+            "http://localhost:9090/api/orders/buy/positionSizing",
+            payloads.buyWithRisk,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         } else {
-          await axios.post('http://localhost:9090/api/orders/buy/MarketPlan', payloads.buyWithoutRisk,{
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          await axios.post(
+            "http://localhost:9090/api/orders/buy/MarketPlan",
+            payloads.buyWithoutRisk,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
       } else if (tradeType === "sell") {
         if (useRiskManagement) {
-          await axios.post('http://localhost:9090/api/orders/sell/stopLoss', payloads.sellWithRisk,{
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          await axios.post(
+            "http://localhost:9090/api/orders/sell/stopLoss",
+            payloads.sellWithRisk,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         } else {
-          await axios.post('http://localhost:9090/api/orders/sell/MarketPlan', payloads.sellWithoutRisk,{
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          await axios.post(
+            "http://localhost:9090/api/orders/sell/MarketPlan",
+            payloads.sellWithoutRisk,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
         }
       }
       toast.success("Trade successfully placed!");
@@ -122,11 +190,11 @@ const TradeTab = ({ stocks }) => {
             className="form-control"
             placeholder="Stock Name"
             value={stockName}
-            onChange={(e) => setStockName(e.target.value)} // set stock name
+            onChange={(e) => setStockName(e.target.value)}
             required
           />
         </div>
-        {(!useRiskManagement) && (
+        {!useRiskManagement && (
           <div className="mb-3">
             <input
               type="number"
@@ -146,7 +214,10 @@ const TradeTab = ({ stocks }) => {
             checked={useRiskManagement}
             onChange={(e) => setUseRiskManagement(e.target.checked)}
           />
-          <label className="form-check-label text-light" htmlFor="useRiskManagement">
+          <label
+            className="form-check-label text-light"
+            htmlFor="useRiskManagement"
+          >
             Use Risk Management
           </label>
         </div>
@@ -179,7 +250,7 @@ const TradeTab = ({ stocks }) => {
           Place Order
         </button>
       </form>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 };

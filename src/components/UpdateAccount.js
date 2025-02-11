@@ -36,8 +36,8 @@ const UpdateAccount = () => {
           fname: values.firstName,
           lname: values.lastName,
           email: values.email,
-        }
-        
+        };
+
         const token = sessionStorage.getItem("token");
         const accountId = sessionStorage.getItem("accountId");
         // Send the updated data to the backend using Axios
@@ -61,7 +61,10 @@ const UpdateAccount = () => {
         resetForm();
       } catch (error) {
         // Handle errors (e.g., display error message)
-        console.error("Failed to update account:", error.response?.data || error.message);
+        console.error(
+          "Failed to update account:",
+          error.response?.data || error.message
+        );
         alert("Failed to update account. Please try again.");
       } finally {
         // Set loading state to false
@@ -72,7 +75,10 @@ const UpdateAccount = () => {
 
   return (
     <div className="update-account animate__animated animate__fadeIn">
-      <Link to="/home" className="btn btn-primary position-absolute top-0 end-0 m-3">
+      <Link
+        to="/home"
+        className="btn btn-primary position-absolute top-0 end-0 m-3"
+      >
         Home
       </Link>
       <h2 className="mb-4 text-primary">Update Account</h2>
@@ -86,7 +92,9 @@ const UpdateAccount = () => {
           <input
             type="text"
             className={`form-control ${
-              formik.touched.firstName && formik.errors.firstName ? "is-invalid" : ""
+              formik.touched.firstName && formik.errors.firstName
+                ? "is-invalid"
+                : ""
             }`}
             id="firstName"
             name="firstName"
@@ -107,7 +115,9 @@ const UpdateAccount = () => {
           <input
             type="text"
             className={`form-control ${
-              formik.touched.lastName && formik.errors.lastName ? "is-invalid" : ""
+              formik.touched.lastName && formik.errors.lastName
+                ? "is-invalid"
+                : ""
             }`}
             id="lastName"
             name="lastName"

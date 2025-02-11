@@ -58,19 +58,14 @@ const HomePage = () => {
     const path = location.pathname;
     if (path.includes("/stocks")) {
       setActiveTab("stocks");
-      console.log("on stocks");
     } else if (path.includes("/trade")) {
       setActiveTab("trade");
-      console.log("on Trade");
     } else if (path.includes("/portfolios")) {
       setActiveTab("portfolios");
-      console.log("on portfolio");
     } else if (path.includes("/watchlist")) {
       setActiveTab("watchlist");
-      console.log("on watchlist");
     } else {
       setActiveTab("dashboard");
-      console.log(" on dashboard");
     }
   }, [location]);
 

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
+import { MdOutlineShoppingCart, MdOutlineAttachMoney } from "react-icons/md"; // Import new icons
+import { Button } from "react-bootstrap";
+import { ShoppingCart, DollarSign } from "lucide-react";
 
 const Stocks = ({ stocks }) => {
-  // const [stocks, setStocks] = useState([])
   const [selectedStock, setSelectedStock] = useState(null);
   const location = useLocation();
-
-  // Dummy data for testing (update with the new fields)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -19,6 +20,12 @@ const Stocks = ({ stocks }) => {
       setSelectedStock(null);
     }
   }, [location.search, stocks]);
+
+  const handleTrade = (type, stock) => {
+    navigate(`/home/trade`, {
+      state: { type, symbol: stock.symbol, stockName: stock.name },
+    });
+  };
 
   const renderStockCard = (stock) => {
     const priceChange = stock.last - stock.open;
@@ -49,6 +56,35 @@ const Stocks = ({ stocks }) => {
                 {Math.abs(priceChange).toFixed(2)} (
                 {priceChangePercent.toFixed(2)}%)
               </p>
+              <div className="d-flex justify-content-around mt-3">
+                <button
+                  className="btn btn-success d-flex align-items-center"
+                  onClick={() => handleTrade("buy", stock)}
+                >
+                  <MdOutlineShoppingCart className="me-2" /> Buy
+                </button>
+                <button
+                  className="btn btn-danger d-flex align-items-center"
+                  onClick={() => handleTrade("sell", stock)}
+                >
+                  <MdOutlineAttachMoney className="me-2" /> Sell
+                </button>
+                {/* <Button
+                  variant="primary"
+                  className="custom-buy-button"
+                  onClick={() => handleTrade("buy", stock)}
+                >
+                  <ShoppingCart size={18} className="me-2" /> Buy
+                </Button>
+
+                <Button
+                  variant="danger"
+                  className="custom-sell-button"
+                  onClick={() => handleTrade("sell", stock)}
+                >
+                  <DollarSign size={18} className="me-2" /> Sell
+                </Button> */}
+              </div>
             </div>
           </div>
         </div>

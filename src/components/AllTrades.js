@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, DollarSign, Calendar, TrendingUp, TrendingDown, Clock, Tag } from "lucide-react";
+import {
+  ArrowLeft,
+  DollarSign,
+  Calendar,
+  TrendingUp,
+  TrendingDown,
+  Clock,
+  Tag,
+} from "lucide-react";
 import axios from "axios";
 
 const AllTrades = () => {
@@ -16,18 +24,24 @@ const AllTrades = () => {
         let response;
         if (showAll) {
           // Fetch all trades using Axios
-          response = await axios.get(`http://localhost:9091/api/stock/${accountId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          response = await axios.get(
+            `http://localhost:9091/api/stock/${accountId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Include the JWT token
+              },
+            }
+          );
         } else {
           // Fetch recent trades using Axios
-          response = await axios.get(`http://localhost:9091/api/stock/trades/last5days/${accountId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the JWT token
-            },
-          });
+          response = await axios.get(
+            `http://localhost:9091/api/stock/trades/last5days/${accountId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, // Include the JWT token
+              },
+            }
+          );
         }
         const tradesData = response.data.map((trade) => ({
           id: trade.orderId,
@@ -81,7 +95,10 @@ const AllTrades = () => {
           Back to Home
         </Link>
         <h2 className="text-primary mb-0 me-3">All Trades</h2>
-        <button className="btn btn-secondary" onClick={() => setShowAll(!showAll)}>
+        <button
+          className="btn btn-secondary"
+          onClick={() => setShowAll(!showAll)}
+        >
           {showAll ? "Show Recent" : "Show All"}
         </button>
       </div>
@@ -95,7 +112,7 @@ const AllTrades = () => {
           Error fetching trades. Please try again.
         </div>
       )} */}
-      
+
       <div className="card bg-dark">
         <div className="card-body">
           {trades.map((trade) => {
@@ -119,13 +136,23 @@ const AllTrades = () => {
                     </p>
                   </div>
                   <div className="text-end">
-                    <h5 className={`mb-1 ${trade.type === "buy" ? "text-success" : "text-danger"}`}>
-                      {trade.type === "buy" ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
+                    <h5
+                      className={`mb-1 ${
+                        trade.type === "buy" ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {trade.type === "buy" ? (
+                        <TrendingUp size={18} />
+                      ) : (
+                        <TrendingDown size={18} />
+                      )}
                       {trade.type.toUpperCase()}
                     </h5>
                     <p className="mb-0 text-light">
                       <DollarSign size={14} className="me-1" />
-                      {trade.amount !== undefined ? trade.amount.toFixed(2) : "N/A"}
+                      {trade.amount !== undefined
+                        ? trade.amount.toFixed(2)
+                        : "N/A"}
                     </p>
                   </div>
                 </div>
