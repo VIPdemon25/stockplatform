@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import { MdOutlineShoppingCart, MdOutlineAttachMoney } from "react-icons/md"; // Import new icons
-import { Button } from "react-bootstrap";
-import { ShoppingCart, DollarSign } from "lucide-react";
+
 
 const Stocks = ({ stocks }) => {
   const [selectedStock, setSelectedStock] = useState(null);
-  const location = useLocation();
+  const location = useLocation();// Get the current location object
   const navigate = useNavigate();
 
   useEffect(() => {

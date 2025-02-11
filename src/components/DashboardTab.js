@@ -11,71 +11,17 @@ import {
 } from "recharts";
 import axios from "axios";
 
-// Dummy stock data for testing
-const stockList = [
-  { stockId: 1, name: "Apple Inc.", symbol: "AAPL", open: 150.25, last: 151.5 },
-  {
-    stockId: 2,
-    name: "Microsoft Corp.",
-    symbol: "MSFT",
-    open: 280.75,
-    last: 282.0,
-  },
-  {
-    stockId: 3,
-    name: "Amazon.com Inc.",
-    symbol: "AMZN",
-    open: 3380.0,
-    last: 3395.5,
-  },
-  {
-    stockId: 4,
-    name: "Alphabet Inc.",
-    symbol: "GOOGL",
-    open: 2410.0,
-    last: 2415.75,
-  },
-  { stockId: 5, name: "Tesla Inc.", symbol: "TSLA", open: 690.5, last: 678.25 },
-  {
-    stockId: 6,
-    name: "JPMorgan Chase",
-    symbol: "JPM",
-    open: 155.0,
-    last: 156.75,
-  },
-  {
-    stockId: 7,
-    name: "Bank of America",
-    symbol: "BAC",
-    open: 41.5,
-    last: 41.75,
-  },
-  { stockId: 8, name: "Wells Fargo", symbol: "WFC", open: 46.75, last: 46.25 },
-  {
-    stockId: 9,
-    name: "Caterpillar Inc.",
-    symbol: "CAT",
-    open: 235.25,
-    last: 239.0,
-  },
-  {
-    stockId: 10,
-    name: "Deere & Company",
-    symbol: "DE",
-    open: 355.0,
-    last: 352.75,
-  },
-];
 
-const DashboardTab = ({ stocks = stockList }) => {
+
+const DashboardTab = ({ stocks }) => {
   // Passing stock data as a prop (defaulting to dummy data)
-  const [selectedStocks, setSelectedStocks] = useState([]);
-  const [stockData, setStockData] = useState([]);
+  const [selectedStocks, setSelectedStocks] = useState([]);// State to store the selected stocks
+  const [stockData, setStockData] = useState([]);// State to store the stock data
   const [gainers, setGainers] = useState([]);
   const [losers, setLosers] = useState([]);
   const [accountName, setAccountName] = useState("John Doe"); // Dummy account name for now
 
-  const getRandomPrice = (basePrice) => {
+  const getRandomPrice = (basePrice) => {// basicall this function is used to generate random price of stock between 65% to 135% of the base price
     return +(basePrice * (0.65 + Math.random() * 0.7)).toFixed(2);
   };
 
@@ -84,7 +30,7 @@ const DashboardTab = ({ stocks = stockList }) => {
     return colors[index % colors.length]; // Cycle through the three colors
   };
 
-  useEffect(() => {
+  useEffect(() => {// Fetch account details on component mount
     // Commenting out fetching logic for now
     const token = sessionStorage.getItem("token");
     const accountId = sessionStorage.getItem("accountId");
@@ -120,8 +66,10 @@ const DashboardTab = ({ stocks = stockList }) => {
       "Nov",
       "Dec",
     ];
+    // Generate random prices for each stock for each month
     const generatedData = months.map((month) => {
       let entry = { name: month };
+      
       stocks.forEach((stock) => {
         entry[stock.symbol] = getRandomPrice(Math.max(stock.open, stock.last));
       });
@@ -131,7 +79,9 @@ const DashboardTab = ({ stocks = stockList }) => {
     setSelectedStocks(chosenStocks);
     setStockData(generatedData);
 
-    // Determine gainers and losers (based on all stocks, not just the selected ones)
+
+
+    // Determine gainers and losers (based on all generatedData, not just the selected ones)
     const stockChanges = stocks.map((stock) => {
       const firstPrice = generatedData[0][stock.symbol];
       const lastPrice = generatedData[generatedData.length - 1][stock.symbol];
@@ -142,7 +92,7 @@ const DashboardTab = ({ stocks = stockList }) => {
       return { symbol: stock.symbol, name: stock.name, change: changePercent };
     });
 
-    // Sort by gainers and losers
+    // Sort by gainers and losers based on the change of stock pice over the month
     const sortedChanges = [...stockChanges].sort((a, b) => b.change - a.change);
     setGainers(sortedChanges.slice(0, 3));
     setLosers(sortedChanges.slice(-3));

@@ -91,26 +91,7 @@ const HomePage = () => {
     }
   };
 
-  // const renderTabContent = () => {
-  //   switch (activeTab) {
-  //     case "dashboard":
-  //       return <DashboardTab />
-  //     case "stocks":
-  //       return <Stocks />
-  //     case "trade":
-  //       return <TradeTab />
-  //     case "portfolios":
-  //       return selectedPortfolio ? (
-  //         <PortfolioDetails portfolio={selectedPortfolio} onBack={() => setSelectedPortfolio(null)} />
-  //       ) : (
-  //         <PortfoliosTab onSelectPortfolio={setSelectedPortfolio} />
-  //       )
-  //     case "watchlist":
-  //       return <WatchlistTab />
-  //     default:
-  //       return <DashboardTab />
-  //   }
-  // }
+
 
   const onBack = () => {
     navigate("/home");

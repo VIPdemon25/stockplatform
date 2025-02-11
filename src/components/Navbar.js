@@ -14,7 +14,7 @@ const Navbar = ({ handleLogout, stocks }) => {
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
-    e.preventDefault();
+    e.preventDefault();// 
     setShowSearchResults(true);
   };
 
