@@ -138,12 +138,14 @@ const LandingPage = () => {
             <Link
               to="/signup"
               className="btn btn-lg btn-primary px-5 py-3 rounded-pill fw-bold hover-glow"
+              onClick={() => console.log(" Directed to SignUp")}
             >
               Get Started
             </Link>
             <Link
               to="/login"
               className="btn btn-lg btn-outline-light px-5 py-3 rounded-pill fw-bold"
+              onClick={() => console.log(" Directed to Login")}
             >
               Existing Account
             </Link>

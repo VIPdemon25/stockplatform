@@ -23,7 +23,7 @@ const TradeTab = ({ stocks }) => {
   }, [location.state]);
 
   const handleTrade = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevents the default action of the form submission
     const stock = stocks.find(
       (stock) => stock.symbol === symbol && stock.name === stockName
     );
